@@ -2,6 +2,7 @@ import * as React from 'react'
 import Svg, { Circle, Line, Path, Text as SvgText } from 'react-native-svg'
 import { useUniwind } from 'uniwind'
 import { Text, View } from '@/components/ui'
+import { translate } from '@/lib/i18n'
 
 type WatchHandsProps = {
   xHand1: number
@@ -202,13 +203,13 @@ export function SleepClock() {
             className="items-center justify-center"
           >
             <Text className="text-[9px] font-black tracking-wider text-neutral-900 uppercase dark:text-neutral-300">
-              Meta Diaria
+              {translate('sleep_clock.daily_goal')}
             </Text>
             <Text className="mt-0.5 text-xl font-black tracking-tight text-neutral-900 dark:text-red-400">
-              5 Ciclos
+              5 {translate('common.cycles')}
             </Text>
             <Text className="text-[10px] font-black text-neutral-800 dark:text-neutral-400">
-              7.5 Horas
+              7.5 {translate('common.hours')}
             </Text>
           </View>
         </View>

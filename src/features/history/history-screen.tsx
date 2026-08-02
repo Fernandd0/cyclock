@@ -4,6 +4,7 @@ import Svg, { Line, Rect, Text as SvgText } from 'react-native-svg'
 
 import { FocusAwareStatusBar, Text, View } from '@/components/ui'
 import { BedIcon, MoonIcon } from '@/components/ui/icons'
+import { translate } from '@/lib/i18n'
 
 type SleepLog = {
   id: string
@@ -38,12 +39,11 @@ function SleepChart() {
   return (
     <View className="mb-4 rounded-3xl border border-neutral-200/40 bg-white p-5 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
       <Text className="mb-4 text-xs font-bold tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
-        Últimos 7 días — Horas de sueño
+        {translate('history.chart_title')}
       </Text>
 
       <View className="items-center">
         <Svg width={chartWidth} height={chartHeight + 24}>
-          {/* Ideal range band */}
           <Rect
             x={0}
             y={chartHeight - (idealMax / maxHours) * chartHeight}
@@ -54,7 +54,6 @@ function SleepChart() {
             rx={6}
           />
 
-          {/* Ideal range lines */}
           <Line
             x1={0}
             y1={chartHeight - (idealMax / maxHours) * chartHeight}
@@ -76,30 +75,27 @@ function SleepChart() {
             opacity={0.3}
           />
 
-          {/* Bars */}
           {[...sleepLogs].reverse().map((log, i) => {
-            const barHeight = (log.hours / maxHours) * chartHeight
             const x = barGap + i * (barWidth + barGap)
-            const y = chartHeight - barHeight
-            const isToday = log.id === '1'
-
+            const h = (log.hours / maxHours) * chartHeight
+            const y = chartHeight - h
             return (
-              <React.Fragment key={log.id}>
+              <React.Fragment key={`bar-${log.id}`}>
                 <Rect
                   x={x}
                   y={y}
                   width={barWidth}
-                  height={barHeight}
-                  rx={8}
-                  fill={isToday ? '#D21F17' : '#E5E2D9'}
-                  opacity={isToday ? 1 : 0.6}
+                  height={h}
+                  fill="#D21F17"
+                  opacity={0.85}
+                  rx={6}
                 />
                 <SvgText
                   x={x + barWidth / 2}
                   y={chartHeight + 16}
-                  fontSize={9}
-                  fontWeight="800"
-                  fill="#A3A09A"
+                  fill="#8E8B82"
+                  fontSize={10}
+                  fontWeight="700"
                   textAnchor="middle"
                 >
                   {log.shortDate}
@@ -110,15 +106,15 @@ function SleepChart() {
         </Svg>
       </View>
 
-      <View className="mt-2 flex-row items-center justify-between">
+      <View className="mt-2 flex-row items-center justify-between border-t border-neutral-100 pt-3 dark:border-neutral-800/50">
         <View className="flex-row items-center gap-1.5">
           <View className="size-2 rounded-full bg-[#D21F17]" />
-          <Text className="text-[9px] font-bold text-neutral-400 dark:text-neutral-500">
-            Hoy
+          <Text className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400">
+            {translate('common.hours')}
           </Text>
         </View>
         <Text className="text-[9px] font-bold text-neutral-400 dark:text-neutral-500">
-          Rango ideal: 7–9h
+          {translate('history.ideal_range')}
         </Text>
       </View>
     </View>
@@ -130,7 +126,7 @@ function HistorySummary() {
     <View className="mb-4 flex-row gap-2">
       <View className="min-h-[90px] w-[48.5%] justify-between rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
         <Text className="text-[10px] font-black tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
-          Eficiencia Prom.
+          {translate('history.stat_average')}
         </Text>
         <Text className="mt-1 text-3xl font-black text-emerald-600 dark:text-emerald-400">
           92%
@@ -142,13 +138,13 @@ function HistorySummary() {
 
       <View className="min-h-[90px] w-[48.5%] grow justify-between rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
         <Text className="text-[10px] font-black tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
-          Duración Prom.
+          {translate('history.stat_goal')}
         </Text>
         <Text className="mt-1 text-3xl font-black text-neutral-900 dark:text-neutral-50">
           7.4h
         </Text>
         <Text className="mt-2 text-[10px] leading-relaxed font-semibold text-neutral-400 dark:text-neutral-500">
-          ~ 5 ciclos completados
+          ~ 5 {translate('common.cycles')}
         </Text>
       </View>
     </View>
@@ -189,7 +185,7 @@ function HistoryItem({ log }: { log: SleepLog }) {
         <View className="flex-row items-center gap-1.5">
           <MoonIcon className="text-[#D21F17] dark:text-red-400" width={12} height={12} />
           <Text className="text-xs font-black text-neutral-900 dark:text-neutral-50">
-            {log.cycles} Ciclos
+            {log.cycles} {translate('common.cycles')}
           </Text>
         </View>
       </View>
@@ -212,22 +208,19 @@ export function HistoryScreen() {
       >
         <View className="my-4 flex-col">
           <Text className="text-xs font-semibold tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
-            Registro de Sueño
+            {translate('history.header_sub')}
           </Text>
           <Text className="mt-1 text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
-            Historial
+            {translate('history.header_title')}
           </Text>
         </View>
 
-        {/* Chart first */}
         <SleepChart />
-
-        {/* Summary bento row */}
         <HistorySummary />
 
         <View className="my-2">
           <Text className="text-sm font-extrabold text-neutral-900 dark:text-neutral-100">
-            Noches pasadas
+            {translate('history.nights_logged')}
           </Text>
         </View>
 
@@ -242,7 +235,7 @@ export function HistoryScreen() {
               className="mt-2 items-center justify-center rounded-3xl border border-neutral-200/40 bg-white py-4 shadow-sm active:bg-neutral-50 dark:border-neutral-800/30 dark:bg-neutral-900/50 dark:active:bg-neutral-800/80"
             >
               <Text className="text-xs font-black text-[#D21F17] dark:text-red-400">
-                Ver más noches
+                {translate('history.see_more')}
               </Text>
             </Pressable>
           )}

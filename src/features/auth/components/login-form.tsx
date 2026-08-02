@@ -7,6 +7,7 @@ import * as z from 'zod'
 import { Input, Text, View } from '@/components/ui'
 import { getFieldError } from '@/components/ui/form-utils'
 import { AlarmIcon, BedIcon, MoonIcon } from '@/components/ui/icons'
+import { translate } from '@/lib/i18n'
 
 const schema = z.object({
   email: z
@@ -40,7 +41,7 @@ function LoginHeader() {
         Cyclock
       </Text>
       <Text className="mt-1 text-center text-xs font-bold text-neutral-400 dark:text-neutral-500">
-        DUERME POR CICLOS, DESPIERTA CON ENERGÍA
+        {translate('auth.subtitle')}
       </Text>
     </View>
   )
@@ -52,20 +53,20 @@ function BentoTips() {
       <View className="w-[49%] rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
         <AlarmIcon className="text-emerald-500 dark:text-emerald-400" width={18} height={18} />
         <Text className="mt-2 text-xs font-black tracking-tight text-neutral-800 dark:text-neutral-200">
-          5 Ciclos
+          {translate('auth.tip_cycles')}
         </Text>
         <Text className="mt-0.5 text-[10px] leading-relaxed font-semibold text-neutral-400 dark:text-neutral-500">
-          La ventana ideal para dormir y descansar al máximo.
+          {translate('auth.tip_cycles_desc')}
         </Text>
       </View>
 
       <View className="w-[49%] grow rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
         <BedIcon className="text-[#D21F17] dark:text-red-400" width={18} height={18} />
         <Text className="mt-2 text-xs font-black tracking-tight text-[#D21F17] dark:text-red-400">
-          Eficiencia
+          {translate('auth.tip_efficiency')}
         </Text>
         <Text className="mt-0.5 text-[10px] leading-relaxed font-semibold text-neutral-400 dark:text-neutral-500">
-          Lleva un control de tu historial de sueño y recuperación.
+          {translate('auth.tip_efficiency_desc')}
         </Text>
       </View>
     </View>
@@ -103,14 +104,14 @@ function GoogleBlock({ onSkip }: GoogleBlockProps) {
           />
         </Svg>
         <Text className="text-sm font-extrabold text-neutral-900 dark:text-neutral-100">
-          Continuar con Google
+          {translate('auth.google')}
         </Text>
       </Pressable>
 
       <View className="my-3 flex-row items-center">
         <View className="h-[0.5px] flex-1 bg-neutral-200 dark:bg-neutral-800" style={{ opacity: 0.3 }} />
         <Text className="mx-3 text-[10px] font-bold tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
-          o usar correo
+          {translate('auth.or_email')}
         </Text>
         <View className="h-[0.5px] flex-1 bg-neutral-200 dark:bg-neutral-800" style={{ opacity: 0.3 }} />
       </View>
@@ -127,7 +128,7 @@ function LoginFormCard({ form, onSkip }: LoginFormCardProps) {
   return (
     <View className="rounded-3xl border border-neutral-200/40 bg-white p-6 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
       <Text testID="form-title" className="mb-4 text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">
-        Iniciar Sesión
+        {translate('auth.login_title')}
       </Text>
 
       <View className="gap-2">
@@ -138,8 +139,8 @@ function LoginFormCard({ form, onSkip }: LoginFormCardProps) {
           children={(field: any) => (
             <Input
               testID="email-input"
-              label="Correo Electrónico"
-              placeholder="ejemplo@correo.com"
+              label={translate('auth.email')}
+              placeholder={translate('auth.email_placeholder')}
               autoCapitalize="none"
               keyboardType="email-address"
               value={field.state.value}
@@ -155,7 +156,7 @@ function LoginFormCard({ form, onSkip }: LoginFormCardProps) {
           children={(field: any) => (
             <Input
               testID="password-input"
-              label="Contraseña"
+              label={translate('auth.password')}
               placeholder="••••••••"
               secureTextEntry={true}
               value={field.state.value}
@@ -176,7 +177,7 @@ function LoginFormCard({ form, onSkip }: LoginFormCardProps) {
               className="mt-4 items-center justify-center rounded-2xl bg-[#D21F17] py-3.5 active:opacity-85 dark:bg-red-500"
             >
               <Text className="text-base font-extrabold text-white">
-                {isSubmitting ? 'Cargando...' : 'Entrar con Correo'}
+                {isSubmitting ? '...' : translate('auth.login_btn')}
               </Text>
             </Pressable>
           )}
@@ -188,7 +189,7 @@ function LoginFormCard({ form, onSkip }: LoginFormCardProps) {
           className="mt-2 items-center justify-center py-2 active:opacity-80"
         >
           <Text className="text-sm font-extrabold text-neutral-400 underline dark:text-neutral-500">
-            Entrar como invitado
+            {translate('auth.guest_btn')}
           </Text>
         </Pressable>
       </View>

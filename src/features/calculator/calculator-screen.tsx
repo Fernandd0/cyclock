@@ -3,6 +3,7 @@ import { Pressable, ScrollView } from 'react-native'
 
 import { FocusAwareStatusBar, Select, Text, View } from '@/components/ui'
 import { AlarmIcon, MoonIcon } from '@/components/ui/icons'
+import { translate } from '@/lib/i18n'
 
 type ModeType = 'wakeup' | 'bedtime'
 
@@ -40,7 +41,7 @@ function ModeSelectorBar({
   return (
     <>
       <Text className="mb-2.5 text-xs font-bold text-neutral-400 dark:text-neutral-500">
-        ¿Qué deseas calcular?
+        {translate('calculator.question_mode')}
       </Text>
       <View className="flex-row rounded-2xl border border-neutral-200/20 bg-neutral-100 p-1 dark:border-neutral-800/20 dark:bg-neutral-950">
         <Pressable
@@ -58,7 +59,7 @@ function ModeSelectorBar({
               mode === 'wakeup' ? 'text-[#D21F17] dark:text-red-400' : 'text-neutral-400 dark:text-neutral-500'
             }`}
           >
-            Hora de despertar
+            {translate('calculator.mode_wakeup')}
           </Text>
         </Pressable>
         <Pressable
@@ -76,7 +77,7 @@ function ModeSelectorBar({
               mode === 'bedtime' ? 'text-[#D21F17] dark:text-red-400' : 'text-neutral-400 dark:text-neutral-500'
             }`}
           >
-            Hora de dormir
+            {translate('calculator.mode_bedtime')}
           </Text>
         </Pressable>
       </View>
@@ -112,7 +113,6 @@ function BentoControlCard({
 
   return (
     <View className="mb-4 rounded-3xl border border-neutral-200/40 bg-white p-5 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
-      {/* Mode Switcher */}
       <ModeSelectorBar
         mode={mode}
         setMode={setMode}
@@ -120,11 +120,10 @@ function BentoControlCard({
         setSelectedMinute={setSelectedMinute}
       />
 
-      {/* Time Picker Dropdowns */}
       <View className="mt-4 flex-row gap-2">
         <View className="flex-1">
           <Select
-            label="Hora"
+            label={translate('calculator.label_hour')}
             value={selectedHour}
             onSelect={(val) => setSelectedHour(Number(val))}
             options={hourOptions}
@@ -132,7 +131,7 @@ function BentoControlCard({
         </View>
         <View className="flex-1">
           <Select
-            label="Minutos"
+            label={translate('calculator.label_minute')}
             value={selectedMinute}
             onSelect={(val) => setSelectedMinute(Number(val))}
             options={minuteOptions}
@@ -140,10 +139,9 @@ function BentoControlCard({
         </View>
       </View>
 
-      {/* Presets */}
       <View className="mt-3 flex-row flex-wrap items-center gap-1.5 border-t border-neutral-100 pt-3 dark:border-neutral-800/50">
         <Text className="mr-1 text-[10px] font-bold text-neutral-400 dark:text-neutral-500">
-          Rápidos:
+          {translate('common.quick')}
         </Text>
         {presets.map((p) => {
           const isSelected = selectedHour === p.h && selectedMinute === p.m
@@ -199,7 +197,7 @@ function CycleCard({
   onToggleExpand,
   onToggleAlarm,
 }: CycleCardProps) {
-  let widthClass = 'w-[48.5%]'
+  let widthClass = 'w-full'
   let borderClass = 'border-neutral-200/40 dark:border-neutral-800/30'
   let bgClass = 'bg-white dark:bg-neutral-900/50'
 
@@ -223,11 +221,11 @@ function CycleCard({
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center gap-1.5">
             <Text className="text-[10px] font-bold text-neutral-400 dark:text-neutral-500">
-              {res.cycles} Ciclos
+              {res.cycles} {translate('common.cycles')}
             </Text>
             {res.cycles === 5 && (
               <View className="rounded-full bg-emerald-500 px-2 py-0.5">
-                <Text className="text-[8px] font-bold text-white uppercase">Recomendado</Text>
+                <Text className="text-[8px] font-bold text-white uppercase">{translate('common.recommended')}</Text>
               </View>
             )}
           </View>
@@ -242,10 +240,9 @@ function CycleCard({
           {res.time}
         </Text>
         <Text className="mt-0.5 text-[10px] font-bold text-neutral-500 dark:text-neutral-400">
-          Duración: {res.duration}
+          {translate('common.duration')}: {res.duration}
         </Text>
 
-        {/* Visual cycle dots bar */}
         <View className="mt-2.5 flex-row items-center gap-1">
           {Array.from({ length: res.cycles }, (_, i) => i + 1).map((dotNum) => (
             <View
@@ -276,7 +273,7 @@ function CycleCard({
         >
           <AlarmIcon className={isSet ? 'text-white' : 'text-neutral-600 dark:text-neutral-400'} width={10} height={10} />
           <Text className={`text-[8px] font-bold ${isSet ? 'text-white' : 'text-neutral-600 dark:text-neutral-400'}`}>
-            {isSet ? 'Seteada' : 'Alarma'}
+            {isSet ? translate('common.alarm_set') : translate('common.set_alarm')}
           </Text>
         </Pressable>
       </View>
@@ -337,24 +334,24 @@ function useCalculatorResults(mode: ModeType, selectedHour: number, selectedMinu
       const hour = Math.floor(resultMinutes / 60)
       const min = Math.round(resultMinutes % 60)
 
-      let rating = 'Deficiente'
+      let rating = translate('calculator.rating_poor')
       let ratingColor = 'text-rose-600 dark:text-rose-400'
       let details = ''
 
       if (cycles === 6) {
-        rating = 'Excelente'
+        rating = translate('calculator.rating_excellent')
         ratingColor = 'text-emerald-600 dark:text-emerald-400'
-        details = 'Sueño óptimo. Te despertarás sintiéndote renovado y con máxima alerta mental.'
+        details = translate('calculator.details_6_cycles')
       } else if (cycles === 5) {
-        rating = 'Excelente'
+        rating = translate('calculator.rating_excellent')
         ratingColor = 'text-emerald-600 dark:text-emerald-400'
-        details = 'Sueño ideal. Cumple con la recomendación general de descanso saludable.'
+        details = translate('calculator.details_5_cycles')
       } else if (cycles === 4) {
-        rating = 'Suficiente'
+        rating = translate('calculator.rating_sufficient')
         ratingColor = 'text-amber-600 dark:text-amber-400'
-        details = 'Sueño mínimo. Suficiente para funcionar, pero podrías sentir fatiga acumulada.'
+        details = translate('calculator.details_4_cycles')
       } else {
-        details = 'Sueño insuficiente. Es probable que experimentes somnolencia durante el día.'
+        details = translate('calculator.details_3_cycles')
       }
 
       options.push({
@@ -402,10 +399,10 @@ export function CalculatorScreen() {
       >
         <View className="my-4 flex-col">
           <Text className="text-xs font-semibold text-neutral-400 dark:text-neutral-500">
-            Ciclos de sueño
+            {translate('calculator.header_sub')}
           </Text>
           <Text className="mt-1 text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
-            Calculadora
+            {translate('calculator.header_title')}
           </Text>
         </View>
 
@@ -422,10 +419,10 @@ export function CalculatorScreen() {
 
         <View className="my-2">
           <Text className="text-sm font-extrabold text-neutral-900 dark:text-neutral-100">
-            {mode === 'wakeup' ? 'Deberías irte a dormir a las:' : 'Deberías despertarte a las:'}
+            {mode === 'wakeup' ? translate('calculator.result_bedtime_text') : translate('calculator.result_wakeup_text')}
           </Text>
           <Text className="mt-0.5 text-[10px] leading-relaxed font-semibold text-neutral-400 dark:text-neutral-500">
-            * Bloques de 90 min + 14 min de transición.
+            {translate('calculator.transition_footnote')}
           </Text>
         </View>
 

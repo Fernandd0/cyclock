@@ -17,6 +17,7 @@ import {
   UserIcon,
 } from '@/components/ui/icons'
 import { useAuthStore as useAuth } from '@/features/auth/use-auth-store'
+import { translate, useSelectedLanguage } from '@/lib/i18n'
 import {
   SleepClock,
   WearableCard,
@@ -51,7 +52,7 @@ function QuickAltCard({ item, activeAlarm, onSetAlarm }: QuickAltCardProps) {
     <View className="flex-1 justify-between rounded-2xl bg-white/10 p-3.5 dark:bg-black/20">
       <View className="flex-row items-center justify-between">
         <Text className="text-[9px] font-bold text-[#F3C5C3] dark:text-[#BA8C8A]">
-          {item.cycles} ciclos · {item.label}
+          {item.cycles} {translate('common.cycles')} · {item.label}
         </Text>
         <Text className="text-[9px] font-bold text-white/70">
           {item.duration}
@@ -70,7 +71,7 @@ function QuickAltCard({ item, activeAlarm, onSetAlarm }: QuickAltCardProps) {
       >
         <AlarmIcon className="text-white" width={10} height={10} />
         <Text className="text-[8px] font-bold text-white">
-          {isSet ? 'Seteada' : 'Alarma'}
+          {isSet ? translate('common.alarm_set') : translate('common.set_alarm')}
         </Text>
       </Pressable>
     </View>
@@ -97,9 +98,9 @@ function QuickSleepNow({ activeAlarm, onSetAlarm }: QuickSleepNowProps) {
     }
 
     return {
-      ideal: calculate(5, 'Ideal'),
-      min: calculate(4, 'Mínimo'),
-      max: calculate(6, 'Máximo'),
+      ideal: calculate(5, translate('common.ideal')),
+      min: calculate(4, translate('common.minimum')),
+      max: calculate(6, translate('common.maximum')),
     }
   }, [])
 
@@ -109,23 +110,22 @@ function QuickSleepNow({ activeAlarm, onSetAlarm }: QuickSleepNowProps) {
         <View className="flex-row items-center gap-2">
           <MoonIcon className="text-[#F5F2EB] dark:text-[#EBE7DD]" width={16} height={16} />
           <Text className="text-xs font-bold text-[#F5F2EB]/90 dark:text-[#EBE7DD]/80">
-            Si te duermes ahora
+            {translate('home.sleep_now_title')}
           </Text>
         </View>
         <Text className="text-[9px] font-bold text-[#F3C5C3] dark:text-[#BA8C8A]">
-          +14 min transición
+          {translate('home.transition_note')}
         </Text>
       </View>
 
-      {/* Hero Recommendation Bento Card (5 Cycles) */}
       <View className="mt-4 rounded-2xl bg-white/20 p-4 dark:bg-black/30">
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center gap-1.5">
             <View className="rounded-full bg-emerald-500 px-2 py-0.5">
-              <Text className="text-[8px] font-bold text-white uppercase">Ideal · 5 Ciclos</Text>
+              <Text className="text-[8px] font-bold text-white uppercase">{translate('home.ideal_tag')}</Text>
             </View>
             <Text className="text-[10px] font-bold text-[#F3C5C3] dark:text-[#BA8C8A]">
-              7.5 horas de descanso
+              {translate('home.ideal_desc')}
             </Text>
           </View>
           <MoonIcon className="text-amber-300" width={14} height={14} />
@@ -134,7 +134,7 @@ function QuickSleepNow({ activeAlarm, onSetAlarm }: QuickSleepNowProps) {
         <View className="mt-2 flex-row items-end justify-between">
           <View>
             <Text className="text-xs font-semibold text-[#F3C5C3] dark:text-[#BA8C8A]">
-              Despierta a las
+              {translate('home.wake_up_at')}
             </Text>
             <Text className="text-3xl font-black tracking-tight text-white">
               {ideal.time}
@@ -149,13 +149,12 @@ function QuickSleepNow({ activeAlarm, onSetAlarm }: QuickSleepNowProps) {
           >
             <AlarmIcon className="text-white" width={12} height={12} />
             <Text className="text-xs font-bold text-white">
-              {activeAlarm === ideal.time ? 'Alarma seteada' : 'Set alarma'}
+              {activeAlarm === ideal.time ? translate('common.alarm_set') : translate('common.set_alarm')}
             </Text>
           </Pressable>
         </View>
       </View>
 
-      {/* 2-Column Bento Row for Alternatives (4 & 6 Cycles) */}
       <View className="mt-2 flex-row gap-2">
         {[min, max].map((item) => (
           <QuickAltCard
@@ -180,13 +179,13 @@ function HeroCard({ onPressEdit }: HeroCardProps) {
       <View className="flex-row items-start justify-between">
         <View className="flex-col pr-8">
           <Text className="text-[10px] font-bold text-neutral-400 dark:text-neutral-500">
-            Recomendado para hoy
+            {translate('home.hero_tag')}
           </Text>
           <Text className="mt-1.5 text-lg font-black tracking-tight text-neutral-900 dark:text-neutral-50">
-            Duerme antes de las 23:15
+            {translate('home.hero_title')}
           </Text>
           <Text className="mt-1 text-[10px] font-semibold text-neutral-400 dark:text-neutral-500">
-            Basado en tu calendario y ciclos óptimos.
+            {translate('home.hero_desc')}
           </Text>
         </View>
         <Pressable
@@ -224,10 +223,10 @@ function BentoSleepNowCard({ isActive, onPress }: BentoSleepNowCardProps) {
       </View>
       <View className="mt-8">
         <Text className="text-sm font-bold text-white">
-          Dormir ahora
+          {translate('home.btn_sleep_now')}
         </Text>
         <Text className="mt-0.5 text-[9px] font-bold text-[#F3C5C3] dark:text-[#BA8C8A]">
-          {isActive ? 'Ocultar sugerencias' : 'Empezar a registrar'}
+          {translate('home.btn_sleep_now_sub')}
         </Text>
       </View>
     </Pressable>
@@ -251,10 +250,10 @@ function BentoCalculateCard({ onPress }: BentoCalculateCardProps) {
       </View>
       <View className="mt-2">
         <Text className="text-sm font-bold text-neutral-900 dark:text-neutral-50">
-          Calcular manual
+          {translate('home.btn_calc_manual')}
         </Text>
         <Text className="mt-0.5 text-[9px] font-bold text-neutral-400 dark:text-neutral-500">
-          Elegir otra hora
+          {translate('home.btn_calc_manual_sub')}
         </Text>
       </View>
     </Pressable>
@@ -271,10 +270,10 @@ function BentoStreakCard() {
       </View>
       <View className="mt-2">
         <Text className="text-sm font-bold text-neutral-900 dark:text-neutral-50">
-          Racha de sueño
+          {translate('home.btn_streak')}
         </Text>
         <Text className="mt-0.5 text-[9px] font-bold text-amber-600 dark:text-amber-400">
-          4 días seguidos
+          {translate('home.btn_streak_sub')}
         </Text>
       </View>
     </View>
@@ -297,10 +296,10 @@ function BentoProfileCard({ onPress }: BentoProfileCardProps) {
         </View>
         <View className="flex-col">
           <Text className="text-sm font-bold text-neutral-900 dark:text-neutral-50">
-            Perfil
+            {translate('home.profile_bar_title')}
           </Text>
           <Text className="mt-0.5 text-[10px] font-semibold text-neutral-400 dark:text-neutral-500">
-            Edad · Calendario conectado
+            {translate('home.profile_bar_sub')}
           </Text>
         </View>
       </View>
@@ -313,6 +312,7 @@ export function HomeScreen() {
   const token = useAuth.use.token()
   const isGuest = token?.access === 'guest-access'
   const signOut = useAuth.use.signOut()
+  const { language } = useSelectedLanguage()
 
   const [showSleepNow, setShowSleepNow] = React.useState(false)
   const [activeAlarm, setActiveAlarm] = React.useState<string | null>(null)
@@ -323,8 +323,8 @@ export function HomeScreen() {
       day: 'numeric',
       month: 'long',
     }
-    return new Date().toLocaleDateString('es-MX', options)
-  }, [])
+    return new Date().toLocaleDateString(language === 'es' ? 'es-PE' : 'en-US', options)
+  }, [language])
 
   const handleSetAlarm = (time: string) => {
     setActiveAlarm(activeAlarm === time ? null : time)
@@ -345,7 +345,7 @@ export function HomeScreen() {
       >
         <View className="my-4 flex-row items-center justify-between">
           <View className="flex-col">
-            <Text className="text-xs font-semibold text-neutral-400 dark:text-neutral-500">
+            <Text className="text-xs font-semibold text-neutral-400 capitalize dark:text-neutral-500">
               {formattedDate}
             </Text>
             <Text className="mt-1 text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
@@ -371,17 +371,12 @@ export function HomeScreen() {
           </Pressable>
         </View>
 
-        {/* Circular Sleep Clock */}
         <SleepClock />
 
-        {/* Bento Grid Layout */}
         <View className="mt-2 flex-col gap-2">
-          {/* Card 1: HERO (Full width) */}
           <HeroCard onPressEdit={handleEditHero} />
 
-          {/* Row 2: Left column (Dormir ahora) & Right column (Calcular manual + Racha de sueño) */}
           <View className="flex-row items-stretch gap-2">
-            {/* Left column */}
             <View className="flex-1">
               <BentoSleepNowCard
                 isActive={showSleepNow}
@@ -389,7 +384,6 @@ export function HomeScreen() {
               />
             </View>
 
-            {/* Right column */}
             <View className="flex-1 flex-col gap-2">
               <BentoCalculateCard
                 onPress={() => router.push('/calculator')}
@@ -398,17 +392,14 @@ export function HomeScreen() {
             </View>
           </View>
 
-          {/* Conditional Sleep suggestions box */}
           {showSleepNow && (
             <QuickSleepNow activeAlarm={activeAlarm} onSetAlarm={handleSetAlarm} />
           )}
 
-          {/* Row 3: BentoProfileCard (Full width horizontal bar below the grid) */}
           <BentoProfileCard
             onPress={() => router.push('/settings')}
           />
 
-          {/* Wearable Sync banner (SOON) */}
           <WearableCard />
         </View>
       </ScrollView>

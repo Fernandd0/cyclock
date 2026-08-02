@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/icons'
 import { useAuthStore as useAuth } from '@/features/auth/use-auth-store'
 import { useIsFirstTime } from '@/lib/hooks/use-is-first-time'
+import { translate } from '@/lib/i18n'
 
 export default function TabLayout() {
   const status = useAuth.use.status()
@@ -30,7 +31,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Inicio',
+          title: translate('home.header_greeting'),
           headerShown: false,
           tabBarIcon: ({ color }) => <HomeIcon color={color} />,
           tabBarButtonTestID: 'home-tab',
@@ -40,7 +41,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="calculator"
         options={{
-          title: 'Calculadora',
+          title: translate('calculator.header_title'),
           headerShown: false,
           tabBarIcon: ({ color }) => <AlarmIcon color={color} />,
           tabBarButtonTestID: 'calculator-tab',
@@ -50,7 +51,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="history"
         options={{
-          title: 'Historial',
+          title: translate('history.header_sub'),
           headerShown: false,
           tabBarIcon: ({ color }) => <FeedIcon color={color} />,
           tabBarButtonTestID: 'history-tab',
@@ -60,7 +61,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Ajustes',
+          title: translate('settings.title'),
           headerShown: false,
           tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
           tabBarButtonTestID: 'settings-tab',

@@ -20,8 +20,8 @@ export function LanguageItem() {
 
   const langs = React.useMemo(
     () => [
-      { label: 'Español 🇲🇽', value: 'es' },
       { label: 'English 🇺🇸', value: 'en' },
+      { label: 'Español 🇵🇪', value: 'es' },
     ],
     [],
   )

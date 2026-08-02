@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Text, View } from '@/components/ui'
 import { WatchIcon } from '@/components/ui/icons'
+import { translate } from '@/lib/i18n'
 import { BentoCard } from './bento-card'
 
 export function WearableCard() {
@@ -16,10 +17,10 @@ export function WearableCard() {
         </View>
         <View className="flex-1 flex-col">
           <Text className="text-base font-bold text-[#0B3C30] dark:text-[#EBE7DD]">
-            Wearable Sync
+            {translate('home.wearable_title')}
           </Text>
           <Text className="mt-0.5 text-xs font-medium text-[#5C584E] dark:text-[#8E8B82]">
-            Track cycles automatically with your watch
+            {translate('home.wearable_desc')}
           </Text>
         </View>
       </View>

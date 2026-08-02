@@ -37,7 +37,7 @@ export function changeLanguage(lang: Language) {
 
 export function useSelectedLanguage() {
   const [language, setLang] = useMMKVString(LOCAL)
-  const activeLanguage = (language === 'es' || language === 'en') ? language : 'es'
+  const activeLanguage = (language === 'es' || language === 'en') ? language : 'en'
 
   const setLanguage = useCallback(
     (lang: Language) => {

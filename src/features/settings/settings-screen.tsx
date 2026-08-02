@@ -21,23 +21,28 @@ import { useSelectedTheme } from '@/lib/hooks/use-selected-theme'
 import { translate, useSelectedLanguage } from '@/lib/i18n'
 
 function ProfileCard() {
+  const token = useAuth.use.token()
+  const isGuest = token?.access === 'guest-access'
+
   return (
     <View className="min-h-[110px] w-[62%] justify-between rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
       <View className="flex-row items-center gap-2">
         <View className="size-8 items-center justify-center rounded-full bg-red-50 dark:bg-red-950/20">
-          <Text className="text-sm font-extrabold text-[#D21F17] dark:text-red-400">G</Text>
+          <Text className="text-sm font-extrabold text-[#D21F17] dark:text-red-400">
+            {isGuest ? 'G' : 'U'}
+          </Text>
         </View>
         <View className="flex-col">
           <Text className="text-[10px] font-black tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
-            Perfil
+            {translate('home.profile_bar_title')}
           </Text>
           <Text className="text-sm font-black tracking-tight text-neutral-900 dark:text-neutral-50">
-            Invitado
+            {isGuest ? translate('settings.profile_guest') : translate('settings.profile_user')}
           </Text>
         </View>
       </View>
       <Text className="mt-2 text-[9px] leading-normal font-semibold text-neutral-400 dark:text-neutral-500">
-        Estás probando Cyclock sin iniciar sesión.
+        Cyclock
       </Text>
     </View>
   )
@@ -57,9 +62,9 @@ function BentoThemeCard() {
 
   const themes = React.useMemo(
     () => [
-      { label: `${translate('settings.theme.dark')} 🌙`, value: 'dark' },
-      { label: `${translate('settings.theme.light')} 🌞`, value: 'light' },
-      { label: `${translate('settings.theme.system')} ⚙️`, value: 'system' },
+      { label: `${translate('settings.theme_dark')} 🌙`, value: 'dark' },
+      { label: `${translate('settings.theme_light')} 🌞`, value: 'light' },
+      { label: `${translate('settings.theme_system')} ⚙️`, value: 'system' },
     ],
     [],
   )
@@ -77,16 +82,16 @@ function BentoThemeCard() {
       >
         <View className="flex-row items-center justify-between">
           <Text className="text-[10px] font-black tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
-            Tema
+            {translate('settings.theme_title')}
           </Text>
           <MoonIcon color="#D21F17" width={16} height={16} />
         </View>
         <View className="mt-2">
           <Text className="text-base font-black tracking-tight text-neutral-900 dark:text-neutral-50">
-            {themeObj?.label.split(' ')[0] ?? 'Sistema'}
+            {themeObj?.label.split(' ')[0] ?? translate('settings.theme_system')}
           </Text>
           <Text className="mt-0.5 text-[9px] font-bold text-neutral-400 dark:text-neutral-500">
-            Cambiar
+            {translate('settings.theme_title')}
           </Text>
         </View>
       </Pressable>
@@ -109,8 +114,8 @@ function BentoLanguageCard() {
 
   const langs = React.useMemo(
     () => [
-      { label: 'Español 🇲🇽', value: 'es' },
       { label: 'English 🇺🇸', value: 'en' },
+      { label: 'Español 🇵🇪', value: 'es' },
     ],
     [],
   )
@@ -128,16 +133,16 @@ function BentoLanguageCard() {
       >
         <View className="flex-row items-center justify-between">
           <Text className="text-[10px] font-black tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
-            Idioma
+            {translate('settings.language_title')}
           </Text>
           <LanguageIcon color="#D21F17" width={16} height={16} />
         </View>
         <View className="mt-2">
           <Text className="text-base font-black tracking-tight text-neutral-900 dark:text-neutral-50">
-            {selectedLanguage?.label ?? 'Español 🇲🇽'}
+            {selectedLanguage?.label ?? 'English 🇺🇸'}
           </Text>
           <Text className="mt-0.5 text-[9px] font-bold text-neutral-400 dark:text-neutral-500">
-            Seleccionar idioma
+            {translate('settings.language_select')}
           </Text>
         </View>
       </Pressable>
@@ -154,16 +159,16 @@ function BentoLogoutCard({ onPress }: { onPress: () => void }) {
     >
       <View className="flex-row items-center justify-between">
         <Text className="text-[10px] font-black tracking-wider text-red-500 uppercase">
-          Sesión
+          {translate('settings.session_title')}
         </Text>
         <MoonIcon className="text-red-500" width={16} height={16} />
       </View>
       <View className="mt-2">
         <Text className="text-base font-black tracking-tight text-red-600 dark:text-red-400">
-          Salir
+          {translate('settings.logout')}
         </Text>
         <Text className="mt-0.5 text-[9px] font-bold text-red-400">
-          Cerrar
+          {translate('settings.logout_sub')}
         </Text>
       </View>
     </Pressable>
@@ -184,10 +189,10 @@ export function SettingsScreen() {
       >
         <View className="my-4 flex-col">
           <Text className="text-xs font-semibold tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
-            Configuración
+            {translate('settings.header_sub')}
           </Text>
           <Text className="mt-1 text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
-            Ajustes
+            {translate('settings.title')}
           </Text>
         </View>
 
