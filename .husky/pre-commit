@@ -1,6 +1,9 @@
-
 . "$(dirname "$0")/common.sh"
 
+# Load .env file if it exists
+if [ -f .env ]; then
+    export $(grep -v '^#' .env | xargs) 2>/dev/null
+fi
 
 echo "===\n>> Checking branch name..."
 
