@@ -1,11 +1,10 @@
 {
   "onboarding": {
-    "message": "Welcome to obytes app site"
+    "message": "Welcome to Cyclock"
   },
   "settings": {
     "about": "About",
     "app_name": "App Name",
-    "arabic": "Arabic",
     "english": "English",
     "generale": "General",
     "github": "Github",
@@ -16,6 +15,7 @@
     "privacy": "Privacy Policy",
     "rate": "Rate",
     "share": "Share",
+    "spanish": "Español",
     "support": "Support",
     "support_us": "Support Us",
     "terms": "Terms of Service",
@@ -29,5 +29,5 @@
     "version": "Version",
     "website": "Website"
   },
-  "welcome": "Welcome to obytes app site"
+  "welcome": "Welcome to Cyclock"
 }

@@ -1,0 +1,33 @@
+{
+  "onboarding": {
+    "message": "Bienvenido a Cyclock"
+  },
+  "settings": {
+    "about": "Acerca de",
+    "app_name": "Nombre de la App",
+    "english": "English",
+    "generale": "General",
+    "github": "Github",
+    "language": "Idioma",
+    "links": "Enlaces",
+    "logout": "Cerrar Sesión",
+    "more": "Más",
+    "privacy": "Política de Privacidad",
+    "rate": "Calificar",
+    "share": "Compartir",
+    "spanish": "Español",
+    "support": "Soporte",
+    "support_us": "Apóyanos",
+    "terms": "Términos de Servicio",
+    "theme": {
+      "dark": "Oscuro",
+      "light": "Claro",
+      "system": "Sistema",
+      "title": "Tema"
+    },
+    "title": "Ajustes",
+    "version": "Versión",
+    "website": "Sitio Web"
+  },
+  "welcome": "Bienvenido a Cyclock"
+}

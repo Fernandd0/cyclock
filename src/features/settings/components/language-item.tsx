@@ -3,7 +3,7 @@ import type { OptionType } from '@/components/ui'
 import type { Language } from '@/lib/i18n/resources'
 import * as React from 'react'
 import { Options, useModal } from '@/components/ui'
-import { translate, useSelectedLanguage } from '@/lib/i18n'
+import { useSelectedLanguage } from '@/lib/i18n'
 
 import { SettingsItem } from './settings-item'
 
@@ -20,8 +20,8 @@ export function LanguageItem() {
 
   const langs = React.useMemo(
     () => [
-      { label: translate('settings.english'), value: 'en' },
-      { label: translate('settings.arabic'), value: 'ar' },
+      { label: 'Español 🇲🇽', value: 'es' },
+      { label: 'English 🇺🇸', value: 'en' },
     ],
     [],
   )

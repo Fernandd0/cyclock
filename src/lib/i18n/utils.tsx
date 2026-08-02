@@ -26,11 +26,7 @@ export const translate = memoize(
 
 export function changeLanguage(lang: Language) {
   i18n.changeLanguage(lang)
-  if (lang === 'ar') {
-    I18nManager.forceRTL(true)
-  } else {
-    I18nManager.forceRTL(false)
-  }
+  I18nManager.forceRTL(false)
   if (Platform.OS === 'ios' || Platform.OS === 'android') {
     if (__DEV__) NativeModules.DevSettings.reload()
     else RNRestart.restart()
@@ -41,6 +37,7 @@ export function changeLanguage(lang: Language) {
 
 export function useSelectedLanguage() {
   const [language, setLang] = useMMKVString(LOCAL)
+  const activeLanguage = (language === 'es' || language === 'en') ? language : 'es'
 
   const setLanguage = useCallback(
     (lang: Language) => {
@@ -50,5 +47,5 @@ export function useSelectedLanguage() {
     [setLang],
   )
 
-  return { language: language as Language, setLanguage }
+  return { language: activeLanguage as Language, setLanguage }
 }

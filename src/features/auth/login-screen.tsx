@@ -16,10 +16,15 @@ export function LoginScreen() {
     router.push('/')
   }
 
+  const onSkip = () => {
+    signIn({ access: 'guest-access', refresh: 'guest-refresh' })
+    router.push('/')
+  }
+
   return (
     <>
       <FocusAwareStatusBar />
-      <LoginForm onSubmit={onSubmit} />
+      <LoginForm onSubmit={onSubmit} onSkip={onSkip} />
     </>
   )
 }

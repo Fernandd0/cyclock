@@ -9,15 +9,22 @@ import { getLanguage } from './utils'
 
 export * from './utils'
 
+const deviceLanguage = getLocales()[0]?.languageTag?.split('-')[0] || 'en'
+const storedLanguage = getLanguage()
+const activeLng = (storedLanguage === 'es' || storedLanguage === 'en')
+  ? storedLanguage
+  : (deviceLanguage === 'es' || deviceLanguage === 'en')
+    ? deviceLanguage
+    : 'en'
+
 i18n.use(initReactI18next).init({
   resources,
-  lng: getLanguage() || getLocales()[0]?.languageTag, // TODO: if you are not supporting multiple languages or languages with multiple directions you can set the default value to `en`
+  lng: activeLng,
   fallbackLng: 'en',
-  compatibilityJSON: 'v4', // Updated to v4 for i18next compatibility
+  compatibilityJSON: 'v4',
 
-  // allows integrating dynamic values into translations.
   interpolation: {
-    escapeValue: false, // escape passed in values to avoid XSS injections
+    escapeValue: false,
   },
 })
 

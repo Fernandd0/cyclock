@@ -2,9 +2,10 @@ import { Redirect, Tabs } from 'expo-router'
 import * as React from 'react'
 
 import {
+  AlarmIcon,
+  Feed as FeedIcon,
   Home as HomeIcon,
   Settings as SettingsIcon,
-  Style as StyleIcon,
 } from '@/components/ui/icons'
 import { useAuthStore as useAuth } from '@/features/auth/use-auth-store'
 import { useIsFirstTime } from '@/lib/hooks/use-is-first-time'
@@ -19,8 +20,13 @@ export default function TabLayout() {
   if (status === 'signOut') {
     return <Redirect href="/login" />
   }
+
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: '#D21F17',
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -32,18 +38,29 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="style"
+        name="calculator"
         options={{
-          title: 'Style',
+          title: 'Calculadora',
           headerShown: false,
-          tabBarIcon: ({ color }) => <StyleIcon color={color} />,
-          tabBarButtonTestID: 'style-tab',
+          tabBarIcon: ({ color }) => <AlarmIcon color={color} />,
+          tabBarButtonTestID: 'calculator-tab',
         }}
       />
+
+      <Tabs.Screen
+        name="history"
+        options={{
+          title: 'Historial',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <FeedIcon color={color} />,
+          tabBarButtonTestID: 'history-tab',
+        }}
+      />
+
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
+          title: 'Ajustes',
           headerShown: false,
           tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
           tabBarButtonTestID: 'settings-tab',

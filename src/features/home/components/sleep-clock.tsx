@@ -1,186 +1,7 @@
 import * as React from 'react'
-import Svg, { Circle, Line, Path } from 'react-native-svg'
+import Svg, { Circle, Line, Path, Text as SvgText } from 'react-native-svg'
 import { useUniwind } from 'uniwind'
 import { Text, View } from '@/components/ui'
-
-function CentralGear({ stroke }: { stroke: string }) {
-  return (
-    <React.Fragment>
-      <Circle
-        cx={160}
-        cy={160}
-        r={50}
-        fill="none"
-        stroke={stroke}
-        strokeWidth={1}
-        strokeDasharray="3, 2"
-      />
-      {Array.from({ length: 6 }).map((_, i) => {
-        const angle = (i * 60 * Math.PI) / 180
-        const x = 160 + 50 * Math.cos(angle)
-        const y = 160 + 50 * Math.sin(angle)
-        return (
-          <Line
-            key={`spoke-c-${x}-${y}`}
-            x1={160}
-            y1={160}
-            x2={x}
-            y2={y}
-            stroke={stroke}
-            strokeWidth={1}
-          />
-        )
-      })}
-    </React.Fragment>
-  )
-}
-
-function TopRightGear({ stroke }: { stroke: string }) {
-  return (
-    <React.Fragment>
-      <Circle
-        cx={210}
-        cy={125}
-        r={30}
-        fill="none"
-        stroke={stroke}
-        strokeWidth={1}
-        strokeDasharray="2, 2"
-      />
-      {Array.from({ length: 4 }).map((_, i) => {
-        const angle = (i * 90 * Math.PI) / 180
-        const x = 210 + 30 * Math.cos(angle)
-        const y = 125 + 30 * Math.sin(angle)
-        return (
-          <Line
-            key={`spoke-tr-${x}-${y}`}
-            x1={210}
-            y1={125}
-            x2={x}
-            y2={y}
-            stroke={stroke}
-            strokeWidth={1}
-          />
-        )
-      })}
-    </React.Fragment>
-  )
-}
-
-function BalanceWheel({
-  stroke,
-  screwColor,
-}: {
-  stroke: string
-  screwColor: string
-}) {
-  return (
-    <React.Fragment>
-      <Circle
-        cx={110}
-        cy={195}
-        r={36}
-        fill="none"
-        stroke={stroke}
-        strokeWidth={1.5}
-      />
-      {Array.from({ length: 3 }).map((_, i) => {
-        const angle = (i * 120 * Math.PI) / 180
-        const wx = 110 + 36 * Math.cos(angle)
-        const wy = 195 + 36 * Math.sin(angle)
-        return (
-          <React.Fragment key={`spoke-bl-${wx}-${wy}`}>
-            <Line
-              x1={110}
-              y1={195}
-              x2={wx}
-              y2={wy}
-              stroke={stroke}
-              strokeWidth={1.5}
-            />
-            <Circle cx={wx} cy={wy} r={1.5} fill={screwColor} />
-          </React.Fragment>
-        )
-      })}
-    </React.Fragment>
-  )
-}
-
-function WatchBridges({
-  stroke,
-  screwColor,
-}: {
-  stroke: string
-  screwColor: string
-}) {
-  return (
-    <React.Fragment>
-      <Path
-        d="M 100 100 Q 160 70 220 100"
-        fill="none"
-        stroke={stroke}
-        strokeWidth={2}
-      />
-      <Path
-        d="M 80 190 C 105 155, 185 150, 215 190"
-        fill="none"
-        stroke={stroke}
-        strokeWidth={2}
-      />
-
-      <Circle
-        cx={100}
-        cy={100}
-        r={4}
-        stroke={screwColor}
-        strokeWidth={1}
-        fill="none"
-      />
-      <Line
-        x1={97}
-        y1={97}
-        x2={103}
-        y2={103}
-        stroke={screwColor}
-        strokeWidth={1}
-      />
-
-      <Circle
-        cx={220}
-        cy={100}
-        r={4}
-        stroke={screwColor}
-        strokeWidth={1}
-        fill="none"
-      />
-      <Line
-        x1={217}
-        y1={97}
-        x2={223}
-        y2={103}
-        stroke={screwColor}
-        strokeWidth={1}
-      />
-
-      <Circle
-        cx={140}
-        cy={160}
-        r={4}
-        stroke={screwColor}
-        strokeWidth={1}
-        fill="none"
-      />
-      <Line
-        x1={137}
-        y1={157}
-        x2={143}
-        y2={163}
-        stroke={screwColor}
-        strokeWidth={1}
-      />
-    </React.Fragment>
-  )
-}
 
 type WatchHandsProps = {
   xHand1: number
@@ -199,31 +20,34 @@ function WatchHands({
 }: WatchHandsProps) {
   return (
     <React.Fragment>
+      {/* Hand 1 */}
       <Line
         x1={160}
         y1={160}
         x2={xHand1}
         y2={yHand1}
         stroke={stroke}
-        strokeWidth={2.5}
+        strokeWidth={4}
       />
-      <Circle cx={139.3} cy={82.73} r={3.5} fill={stroke} />
+      <Circle cx={139.3} cy={82.73} r={4.5} fill={stroke} />
 
+      {/* Hand 2 */}
       <Line
         x1={160}
         y1={160}
         x2={xHand2}
         y2={yHand2}
         stroke={stroke}
-        strokeWidth={2.5}
+        strokeWidth={4}
       />
-      <Circle cx={239.7} cy={166.98} r={3.5} fill={stroke} />
+      <Circle cx={239.7} cy={166.98} r={4.5} fill={stroke} />
 
+      {/* Sleep Arc */}
       <Path
         d={`M ${xHand1} ${yHand1} A 115 115 0 0 1 ${xHand2} ${yHand2}`}
         fill="none"
         stroke={stroke}
-        strokeWidth={5}
+        strokeWidth={7}
         strokeLinecap="round"
       />
     </React.Fragment>
@@ -241,23 +65,50 @@ function DialTicks({
     <React.Fragment>
       {Array.from({ length: 24 }).map((_, i) => {
         const angle = ((i * 15 - 90) * Math.PI) / 180
-        const x1 = 160 + 121 * Math.cos(angle)
-        const y1 = 160 + 121 * Math.sin(angle)
+        const x1 = 160 + 120 * Math.cos(angle)
+        const y1 = 160 + 120 * Math.sin(angle)
         const x2 = 160 + 126 * Math.cos(angle)
         const y2 = 160 + 126 * Math.sin(angle)
         const isMajor = i % 6 === 0
 
         return (
           <Line
-            key={`tick-${x1}-${y1}`}
+            key={`tick-${x1.toFixed(1)}-${y1.toFixed(1)}`}
             x1={x1}
             y1={y1}
             x2={x2}
             y2={y2}
             stroke={isMajor ? majorColor : minorColor}
-            strokeWidth={isMajor ? 1.5 : 1}
-            opacity={isMajor ? 0.7 : 0.3}
+            strokeWidth={isMajor ? 2.5 : 1.5}
+            opacity={isMajor ? 0.9 : 0.4}
           />
+        )
+      })}
+    </React.Fragment>
+  )
+}
+
+function DialNumbers({ color }: { color: string }) {
+  const hours = ['24', '03', '06', '09', '12', '15', '18', '21']
+  return (
+    <React.Fragment>
+      {hours.map((hour, j) => {
+        const angle = ((j * 45 - 90) * Math.PI) / 180
+        const x = 160 + 92 * Math.cos(angle)
+        const y = 160 + 92 * Math.sin(angle) + 4.5
+        return (
+          <SvgText
+            key={`hour-num-${hour}`}
+            x={x}
+            y={y}
+            fill={color}
+            fontSize={12}
+            fontWeight="900"
+            textAnchor="middle"
+            opacity={0.9}
+          >
+            {hour}
+          </SvgText>
         )
       })}
     </React.Fragment>
@@ -268,17 +119,11 @@ export function SleepClock() {
   const { theme } = useUniwind()
   const isDark = theme === 'dark'
 
-  const dialColor = isDark ? '#2A2925' : '#E5E2D9'
+  const dialColor = isDark ? '#F5F5F5' : '#171717'
   const arcColor = isDark ? '#EF4444' : '#D21F17'
-  const gearColor = isDark
-    ? 'rgba(142, 139, 130, 0.25)'
-    : 'rgba(92, 88, 78, 0.2)'
-  const bridgeColor = isDark
-    ? 'rgba(142, 139, 130, 0.4)'
-    : 'rgba(92, 88, 78, 0.35)'
   const screwColor = isDark ? '#8E8B82' : '#5C584E'
-  const majorTickColor = isDark ? '#8E8B82' : '#0B3C30'
-  const minorTickColor = isDark ? '#4A4842' : '#8E8B82'
+  const majorTickColor = isDark ? '#F5F5F5' : '#171717'
+  const minorTickColor = isDark ? '#6E6B62' : '#8E8B82'
 
   const xHand1 = 130.24
   const yHand1 = 48.92
@@ -286,22 +131,44 @@ export function SleepClock() {
   const yHand2 = 170.03
 
   return (
-    <View className="items-center justify-center py-1">
+    <View className="items-center justify-center py-2">
       <View className="relative size-[320px]">
         <Svg width={320} height={320} viewBox="0 0 320 320">
+          {/* Brutalist Shadow Circle */}
+          <Circle
+            cx={164}
+            cy={164}
+            r={115}
+            fill={isDark ? '#000000' : '#171717'}
+            opacity={0.85}
+          />
+
+          {/* Main Bezel circle */}
           <Circle
             cx={160}
             cy={160}
             r={115}
-            fill="none"
+            fill={isDark ? '#1C1B17' : '#FFFFFF'}
             stroke={dialColor}
-            strokeWidth={1.5}
+            strokeWidth={3}
           />
 
-          <CentralGear stroke={gearColor} />
-          <TopRightGear stroke={gearColor} />
-          <BalanceWheel stroke={gearColor} screwColor={screwColor} />
-          <WatchBridges stroke={bridgeColor} screwColor={screwColor} />
+          {/* Inner concentric ring for numerical layout */}
+          <Circle
+            cx={160}
+            cy={160}
+            r={80}
+            fill="none"
+            stroke={dialColor}
+            strokeWidth={0.8}
+            strokeDasharray="2, 3"
+            opacity={0.5}
+          />
+
+          {/* Mechanical layout numbers */}
+          <DialNumbers color={majorTickColor} />
+
+          {/* Watch Hands & Sleep Duration Arc */}
           <WatchHands
             xHand1={xHand1}
             yHand1={yHand1}
@@ -310,19 +177,38 @@ export function SleepClock() {
             stroke={arcColor}
           />
 
-          <Circle cx={160} cy={160} r={6} fill={screwColor} />
-          <Circle cx={160} cy={160} r={2} fill={isDark ? '#000' : '#FFF'} />
+          {/* Central Screw Cap */}
+          <Circle cx={160} cy={160} r={8} fill={screwColor} stroke={dialColor} strokeWidth={2} />
+          <Circle cx={160} cy={160} r={3} fill={isDark ? '#000' : '#FFF'} />
 
+          {/* Outer dial ticks */}
           <DialTicks majorColor={majorTickColor} minorColor={minorTickColor} />
         </Svg>
 
         <View className="pointer-events-none absolute inset-0 flex-col items-center justify-center">
-          <View className="items-center rounded-2xl border border-neutral-100/30 bg-white/75 px-5 py-3 dark:border-neutral-800/30 dark:bg-neutral-950/80">
-            <Text className="text-lg font-black tracking-tight text-[#D21F17] dark:text-red-400">
-              11:00 PM - 6:20 AM
+          <View
+            style={{
+              borderWidth: 2.5,
+              borderColor: isDark ? '#F5F5F5' : '#171717',
+              shadowColor: isDark ? '#F5F5F5' : '#171717',
+              shadowOffset: { width: 3, height: 3 },
+              shadowOpacity: 1,
+              shadowRadius: 0,
+              backgroundColor: isDark ? '#1C1B17' : '#FBBF24',
+              paddingHorizontal: 16,
+              paddingVertical: 10,
+              borderRadius: 16,
+            }}
+            className="items-center justify-center"
+          >
+            <Text className="text-[9px] font-black tracking-wider text-neutral-900 uppercase dark:text-neutral-300">
+              Meta Diaria
             </Text>
-            <Text className="mt-0.5 text-[9px] font-extrabold tracking-wider text-[#0B3C30] uppercase dark:text-[#8E8B82]">
-              5 Cycles
+            <Text className="mt-0.5 text-xl font-black tracking-tight text-neutral-900 dark:text-red-400">
+              5 Ciclos
+            </Text>
+            <Text className="text-[10px] font-black text-neutral-800 dark:text-neutral-400">
+              7.5 Horas
             </Text>
           </View>
         </View>
