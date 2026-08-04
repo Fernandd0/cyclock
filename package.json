@@ -1,5 +1,5 @@
 {
-  "name": "obytesapp",
+  "name": "cyclock",
   "version": "9.0.0",
   "private": true,
   "packageManager": "pnpm@10.12.3",
@@ -29,7 +29,7 @@
     "build:development:ios": "eas build --profile development --platform ios",
     "build:development:android": "eas build --profile development --platform android",
     "build:preview:ios": "eas build --profile preview --platform ios",
-    "build:preview:android": "eas build --profile preview --platform android",
+    "build:preview:android": "cross-env EAS_PROJECT_ID=9d8195b4-a985-4b71-8300-0c4b5c526234 EXPO_ACCOUNT_OWNER=fernaddoo npx eas-cli build --profile preview --platform android",
     "build:production:ios": "eas build --profile production --platform ios",
     "build:production:android": "eas build --profile production --platform android",
     "prepare": "husky",
@@ -43,7 +43,7 @@
     "test:ci": "pnpm run test --coverage",
     "test:watch": "pnpm run test --watch",
     "install-maestro": "curl -Ls 'https://get.maestro.mobile.dev' | bash",
-    "e2e-test": "maestro test .maestro/ -e APP_ID=com.obytes.development"
+    "e2e-test": "maestro test .maestro/ -e APP_ID=com.cyclock.development"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",
@@ -67,6 +67,7 @@
     "expo-splash-screen": "~31.0.13",
     "expo-status-bar": "~3.0.9",
     "expo-system-ui": "~6.0.9",
+    "expo-updates": "~29.0.19",
     "i18next": "^25.8.0",
     "lodash.memoize": "^4.1.2",
     "moti": "^0.30.0",

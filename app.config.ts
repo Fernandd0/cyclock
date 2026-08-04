@@ -1,26 +1,45 @@
 import type { ConfigContext, ExpoConfig } from '@expo/config'
-
 import type { AppIconBadgeConfig } from 'app-icon-badge/types'
 
-import 'tsx/cjs'
+import packageJSON from './package.json'
 
-// adding lint exception as we need to import tsx/cjs before env.ts is imported
-// eslint-disable-next-line perfectionist/sort-imports
-import Env from './env'
+type AppEnv = 'development' | 'preview' | 'production'
 
-const EXPO_ACCOUNT_OWNER = 'obytes'
-const EAS_PROJECT_ID = 'c3e1075b-6fe7-4686-aa49-35b46a229044'
+const appEnv: AppEnv =
+  (process.env.EXPO_PUBLIC_APP_ENV as AppEnv) || 'development'
+const appName = 'Cyclock'
+
+const bundleIds: Record<AppEnv, string> = {
+  development: 'com.cyclock.development',
+  preview: 'com.cyclock.preview',
+  production: 'com.cyclock',
+}
+
+const packages: Record<AppEnv, string> = {
+  development: 'com.cyclock.development',
+  preview: 'com.cyclock.preview',
+  production: 'com.cyclock',
+}
+
+const schemes: Record<AppEnv, string> = {
+  development: 'cyclock',
+  preview: 'cyclock.preview',
+  production: 'cyclock',
+}
+
+const EXPO_ACCOUNT_OWNER = process.env.EXPO_ACCOUNT_OWNER
+const EAS_PROJECT_ID = process.env.EAS_PROJECT_ID
 
 const appIconBadgeConfig: AppIconBadgeConfig = {
-  enabled: Env.EXPO_PUBLIC_APP_ENV !== 'production',
+  enabled: appEnv !== 'production',
   badges: [
     {
-      text: Env.EXPO_PUBLIC_APP_ENV,
+      text: appEnv,
       type: 'banner',
       color: 'white',
     },
     {
-      text: Env.EXPO_PUBLIC_VERSION.toString(),
+      text: packageJSON.version,
       type: 'ribbon',
       color: 'white',
     },
@@ -29,23 +48,24 @@ const appIconBadgeConfig: AppIconBadgeConfig = {
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: Env.EXPO_PUBLIC_NAME,
-  description: `${Env.EXPO_PUBLIC_NAME} Mobile App`,
-  owner: EXPO_ACCOUNT_OWNER,
-  scheme: Env.EXPO_PUBLIC_SCHEME,
-  slug: 'obytesapp',
-  version: Env.EXPO_PUBLIC_VERSION.toString(),
+  name: appName,
+  description: `${appName} Mobile App`,
+  ...(EXPO_ACCOUNT_OWNER ? { owner: EXPO_ACCOUNT_OWNER } : {}),
+  scheme: schemes[appEnv],
+  slug: 'cyclock',
+  version: packageJSON.version,
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   updates: {
     fallbackToCacheTimeout: 0,
+    ...(EAS_PROJECT_ID ? { url: `https://u.expo.dev/${EAS_PROJECT_ID}` } : {}),
   },
   assetBundlePatterns: ['**/*'],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: Env.EXPO_PUBLIC_BUNDLE_ID,
+    bundleIdentifier: bundleIds[appEnv],
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
     },
@@ -58,7 +78,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#2E3C4B',
     },
-    package: Env.EXPO_PUBLIC_PACKAGE,
+    package: packages[appEnv],
   },
   web: {
     favicon: './assets/favicon.png',
@@ -116,9 +136,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ['app-icon-badge', appIconBadgeConfig],
     ['react-native-edge-to-edge'],
   ],
-  extra: {
-    eas: {
-      projectId: EAS_PROJECT_ID,
-    },
-  },
+  ...(EAS_PROJECT_ID
+    ? {
+        extra: {
+          eas: {
+            projectId: EAS_PROJECT_ID,
+          },
+        },
+      }
+    : {}),
 })
