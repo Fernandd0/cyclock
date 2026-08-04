@@ -29,13 +29,10 @@ const _useAuthStore = create<AuthState>((set, get) => ({
       if (userToken !== null) {
         get().signIn(userToken)
       } else {
-        get().signOut()
+        get().signIn({ access: 'guest-access', refresh: 'guest-refresh' })
       }
     } catch (e) {
-      // only to remove eslint error, handle the error properly
       console.error(e)
-      // catch error here
-      // Maybe sign_out user!
     }
   },
 }))

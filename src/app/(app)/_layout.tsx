@@ -8,16 +8,11 @@ import {
   Settings as SettingsIcon,
 } from '@/components/ui/icons'
 import { useAuthStore as useAuth } from '@/features/auth/use-auth-store'
-import { useIsFirstTime } from '@/lib/hooks/use-is-first-time'
 import { translate } from '@/lib/i18n'
 
 export default function TabLayout() {
   const status = useAuth.use.status()
-  const [isFirstTime] = useIsFirstTime()
 
-  if (isFirstTime) {
-    return <Redirect href="/onboarding" />
-  }
   if (status === 'signOut') {
     return <Redirect href="/login" />
   }
