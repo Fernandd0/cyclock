@@ -3,6 +3,7 @@ import type { ColorSchemeType } from '@/lib/hooks/use-selected-theme'
 
 import * as React from 'react'
 import { Pressable } from 'react-native'
+import Svg, { Path } from 'react-native-svg'
 
 import {
   FocusAwareStatusBar,
@@ -13,12 +14,24 @@ import {
   View,
 } from '@/components/ui'
 import {
+  FlameIcon,
   Language as LanguageIcon,
   MoonIcon,
+  UserIcon,
 } from '@/components/ui/icons'
 import { useAuthStore as useAuth } from '@/features/auth/use-auth-store'
 import { useSelectedTheme } from '@/lib/hooks/use-selected-theme'
 import { translate, useSelectedLanguage } from '@/lib/i18n'
+
+function LogOutIcon({ className, width = 16, height = 16 }: { className?: string; width?: number; height?: number }) {
+  return (
+    <Svg width={width} height={height} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <Path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <Path d="M16 17l5-5-5-5" />
+      <Path d="M21 12H9" />
+    </Svg>
+  )
+}
 
 function ProfileCard() {
   const token = useAuth.use.token()
@@ -26,11 +39,9 @@ function ProfileCard() {
 
   return (
     <View className="min-h-[110px] w-[62%] justify-between rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
-      <View className="flex-row items-center gap-2">
+      <View className="flex-row items-center gap-2.5">
         <View className="size-8 items-center justify-center rounded-full bg-red-50 dark:bg-red-950/20">
-          <Text className="text-sm font-extrabold text-[#D21F17] dark:text-red-400">
-            {isGuest ? 'G' : 'U'}
-          </Text>
+          <UserIcon className="text-[#D21F17] dark:text-red-400" width={16} height={16} />
         </View>
         <View className="flex-col">
           <Text className="text-[10px] font-black tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
@@ -161,7 +172,7 @@ function BentoLogoutCard({ onPress }: { onPress: () => void }) {
         <Text className="text-[10px] font-black tracking-wider text-red-500 uppercase">
           {translate('settings.session_title')}
         </Text>
-        <MoonIcon className="text-red-500" width={16} height={16} />
+        <LogOutIcon className="text-red-500" width={16} height={16} />
       </View>
       <View className="mt-2">
         <Text className="text-base font-black tracking-tight text-red-600 dark:text-red-400">
@@ -172,6 +183,75 @@ function BentoLogoutCard({ onPress }: { onPress: () => void }) {
         </Text>
       </View>
     </Pressable>
+  )
+}
+
+function BentoFaqCard() {
+  const [openIndex, setOpenIndex] = React.useState<number | null>(0)
+
+  const faqs = React.useMemo(
+    () => [
+      {
+        q: translate('settings.faq_cycles_q'),
+        a: translate('settings.faq_cycles_a'),
+      },
+      {
+        q: translate('settings.faq_nasa_q'),
+        a: translate('settings.faq_nasa_a'),
+      },
+      {
+        q: translate('settings.faq_inertia_q'),
+        a: translate('settings.faq_inertia_a'),
+      },
+      {
+        q: translate('settings.faq_hygiene_q'),
+        a: translate('settings.faq_hygiene_a'),
+      },
+    ],
+    [],
+  )
+
+  return (
+    <View className="mt-4 w-full rounded-3xl border border-neutral-200/40 bg-white p-5 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
+      <View className="flex-row items-center justify-between">
+        <View className="flex-col">
+          <Text className="text-[10px] font-black tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
+            {translate('settings.faq_subtitle')}
+          </Text>
+          <Text className="mt-0.5 text-base font-black tracking-tight text-neutral-900 dark:text-neutral-50">
+            {translate('settings.faq_title')}
+          </Text>
+        </View>
+        <FlameIcon className="text-[#D21F17] dark:text-red-400" width={18} height={18} />
+      </View>
+
+      <View className="mt-4 flex-col gap-2">
+        {faqs.map((item, idx) => {
+          const isOpen = openIndex === idx
+          return (
+            <Pressable
+              key={`faq-${item.q}`}
+              onPress={() => setOpenIndex(isOpen ? null : idx)}
+              className="rounded-2xl border border-neutral-100 bg-neutral-50/70 p-3.5 dark:border-neutral-800/60 dark:bg-neutral-950/40"
+            >
+              <View className="flex-row items-center justify-between">
+                <Text className="flex-1 pr-2 text-xs font-extrabold text-neutral-800 dark:text-neutral-200">
+                  {item.q}
+                </Text>
+                <Text className="text-xs font-black text-[#D21F17] dark:text-red-400">
+                  {isOpen ? '−' : '+'}
+                </Text>
+              </View>
+              {isOpen && (
+                <Text className="mt-2 border-t border-neutral-200/50 pt-2 text-[10px] leading-relaxed font-medium text-neutral-500 dark:border-neutral-800/60 dark:text-neutral-400">
+                  {item.a}
+                </Text>
+              )}
+            </Pressable>
+          )
+        })}
+      </View>
+    </View>
   )
 }
 
@@ -206,6 +286,9 @@ export function SettingsScreen() {
             <BentoLanguageCard />
           </View>
           <BentoLogoutCard onPress={signOut} />
+
+          {/* Row 3: Sleep Science & FAQ Accordion Section */}
+          <BentoFaqCard />
         </View>
       </ScrollView>
     </View>

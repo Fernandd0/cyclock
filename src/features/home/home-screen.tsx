@@ -280,33 +280,6 @@ function BentoStreakCard() {
   )
 }
 
-type BentoProfileCardProps = {
-  onPress: () => void
-}
-
-function BentoProfileCard({ onPress }: BentoProfileCardProps) {
-  return (
-    <Pressable
-      onPress={onPress}
-      className="w-full flex-row items-center justify-between rounded-3xl border border-neutral-200/40 bg-white px-5 py-3 shadow-sm active:opacity-90 dark:border-neutral-800/30 dark:bg-neutral-900/50"
-    >
-      <View className="flex-row items-center gap-3">
-        <View className="rounded-full bg-red-50 p-2 dark:bg-red-950/20">
-          <UserIcon className="text-[#D21F17] dark:text-red-400" width={16} height={16} />
-        </View>
-        <View className="flex-col">
-          <Text className="text-sm font-bold text-neutral-900 dark:text-neutral-50">
-            {translate('home.profile_bar_title')}
-          </Text>
-          <Text className="mt-0.5 text-[10px] font-semibold text-neutral-400 dark:text-neutral-500">
-            {translate('home.profile_bar_sub')}
-          </Text>
-        </View>
-      </View>
-    </Pressable>
-  )
-}
-
 export function HomeScreen() {
   const router = useRouter()
   const token = useAuth.use.token()
@@ -395,10 +368,6 @@ export function HomeScreen() {
           {showSleepNow && (
             <QuickSleepNow activeAlarm={activeAlarm} onSetAlarm={handleSetAlarm} />
           )}
-
-          <BentoProfileCard
-            onPress={() => router.push('/settings')}
-          />
 
           <WearableCard />
         </View>

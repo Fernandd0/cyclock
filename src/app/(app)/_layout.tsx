@@ -48,6 +48,7 @@ export default function TabLayout() {
         options={{
           title: translate('history.header_sub'),
           headerShown: false,
+          href: null,
           tabBarIcon: ({ color }) => <FeedIcon color={color} />,
           tabBarButtonTestID: 'history-tab',
         }}

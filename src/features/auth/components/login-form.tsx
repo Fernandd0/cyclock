@@ -6,7 +6,7 @@ import * as z from 'zod'
 
 import { Input, Text, View } from '@/components/ui'
 import { getFieldError } from '@/components/ui/form-utils'
-import { AlarmIcon, BedIcon, MoonIcon } from '@/components/ui/icons'
+import { AlarmIcon, BedIcon, FlameIcon, MoonIcon } from '@/components/ui/icons'
 import { translate } from '@/lib/i18n'
 
 const schema = z.object({
@@ -34,15 +34,19 @@ export type LoginFormProps = {
 function LoginHeader() {
   return (
     <View className="items-center justify-center rounded-3xl border border-neutral-200/40 bg-white p-6 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
-      <View className="size-16 items-center justify-center rounded-full bg-red-50 dark:bg-red-950/20">
+      <View className="relative size-16 items-center justify-center rounded-2xl bg-linear-to-b from-red-50 to-red-100/50 dark:from-red-950/40 dark:to-red-900/20">
         <MoonIcon className="text-[#D21F17] dark:text-red-400" width={32} height={32} />
       </View>
+
       <Text className="mt-4 text-3xl font-black tracking-tight text-neutral-900 dark:text-neutral-50">
         Cyclock
       </Text>
-      <Text className="mt-1 text-center text-xs font-bold text-neutral-400 dark:text-neutral-500">
-        {translate('auth.subtitle')}
-      </Text>
+
+      <View className="mt-2 rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1">
+        <Text className="text-[10px] font-black tracking-wider text-[#D21F17] uppercase dark:text-red-400">
+          {translate('auth.subtitle')}
+        </Text>
+      </View>
     </View>
   )
 }
@@ -51,23 +55,48 @@ function BentoTips() {
   return (
     <View className="flex-row gap-2">
       <View className="w-[49%] rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
-        <AlarmIcon className="text-emerald-500 dark:text-emerald-400" width={18} height={18} />
-        <Text className="mt-2 text-xs font-black tracking-tight text-neutral-800 dark:text-neutral-200">
-          {translate('auth.tip_cycles')}
-        </Text>
-        <Text className="mt-0.5 text-[10px] leading-relaxed font-semibold text-neutral-400 dark:text-neutral-500">
+        <View className="flex-row items-center gap-1.5">
+          <AlarmIcon className="text-emerald-500 dark:text-emerald-400" width={16} height={16} />
+          <Text className="text-[10px] font-black tracking-wider text-emerald-600 uppercase dark:text-emerald-400">
+            {translate('auth.tip_cycles')}
+          </Text>
+        </View>
+        <Text className="mt-1 text-[10px] leading-relaxed font-semibold text-neutral-400 dark:text-neutral-500">
           {translate('auth.tip_cycles_desc')}
         </Text>
       </View>
 
       <View className="w-[49%] grow rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
-        <BedIcon className="text-[#D21F17] dark:text-red-400" width={18} height={18} />
-        <Text className="mt-2 text-xs font-black tracking-tight text-[#D21F17] dark:text-red-400">
-          {translate('auth.tip_efficiency')}
-        </Text>
-        <Text className="mt-0.5 text-[10px] leading-relaxed font-semibold text-neutral-400 dark:text-neutral-500">
+        <View className="flex-row items-center gap-1.5">
+          <BedIcon className="text-[#D21F17] dark:text-red-400" width={16} height={16} />
+          <Text className="text-[10px] font-black tracking-wider text-[#D21F17] uppercase dark:text-red-400">
+            {translate('auth.tip_efficiency')}
+          </Text>
+        </View>
+        <Text className="mt-1 text-[10px] leading-relaxed font-semibold text-neutral-400 dark:text-neutral-500">
           {translate('auth.tip_efficiency_desc')}
         </Text>
+      </View>
+    </View>
+  )
+}
+
+function FeaturePillsBar() {
+  return (
+    <View className="flex-row items-center justify-around rounded-2xl border border-neutral-200/30 bg-white/80 p-3 shadow-xs dark:border-neutral-800/30 dark:bg-neutral-900/40">
+      <View className="flex-row items-center gap-1">
+        <MoonIcon className="text-[#D21F17] dark:text-red-400" width={12} height={12} />
+        <Text className="text-[9px] font-black text-neutral-700 dark:text-neutral-300">90m Ciclos</Text>
+      </View>
+      <View className="h-3 w-[0.5px] bg-neutral-200 dark:bg-neutral-800" />
+      <View className="flex-row items-center gap-1">
+        <FlameIcon className="text-amber-500" width={12} height={12} />
+        <Text className="text-[9px] font-black text-neutral-700 dark:text-neutral-300">26m NASA Nap</Text>
+      </View>
+      <View className="h-3 w-[0.5px] bg-neutral-200 dark:bg-neutral-800" />
+      <View className="flex-row items-center gap-1">
+        <AlarmIcon className="text-emerald-500" width={12} height={12} />
+        <Text className="text-[9px] font-black text-neutral-700 dark:text-neutral-300">Sueño REM</Text>
       </View>
     </View>
   )
@@ -174,7 +203,7 @@ function LoginFormCard({ form, onSkip }: LoginFormCardProps) {
               testID="login-button"
               onPress={form.handleSubmit}
               disabled={isSubmitting}
-              className="mt-4 items-center justify-center rounded-2xl bg-[#D21F17] py-3.5 active:opacity-85 dark:bg-red-500"
+              className="mt-4 items-center justify-center rounded-2xl bg-[#D21F17] py-3.5 shadow-sm active:opacity-85 dark:bg-red-500"
             >
               <Text className="text-base font-extrabold text-white">
                 {isSubmitting ? '...' : translate('auth.login_btn')}
@@ -186,9 +215,9 @@ function LoginFormCard({ form, onSkip }: LoginFormCardProps) {
         <Pressable
           testID="skip-login-button"
           onPress={onSkip}
-          className="mt-2 items-center justify-center py-2 active:opacity-80"
+          className="mt-3 items-center justify-center rounded-2xl border border-neutral-200/50 bg-neutral-50 py-3 active:bg-neutral-100 dark:border-neutral-800/40 dark:bg-neutral-800/40"
         >
-          <Text className="text-sm font-extrabold text-neutral-400 underline dark:text-neutral-500">
+          <Text className="text-xs font-black text-neutral-600 dark:text-neutral-300">
             {translate('auth.guest_btn')}
           </Text>
         </Pressable>
@@ -217,6 +246,8 @@ export function LoginForm({ onSubmit = () => {}, onSkip = () => {} }: LoginFormP
       >
         <View className="flex-col gap-3">
           <LoginHeader />
+
+          <FeaturePillsBar />
 
           <LoginFormCard form={form} onSkip={onSkip} />
 

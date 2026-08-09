@@ -2,10 +2,11 @@ import * as React from 'react'
 import { Pressable, ScrollView } from 'react-native'
 
 import { FocusAwareStatusBar, Select, Text, View } from '@/components/ui'
-import { AlarmIcon, MoonIcon } from '@/components/ui/icons'
+import { AlarmIcon, FlameIcon, MoonIcon } from '@/components/ui/icons'
 import { translate } from '@/lib/i18n'
 
 type ModeType = 'wakeup' | 'bedtime'
+type CalcCategory = 'night' | 'nap'
 
 function formatTime(hour: number, minute: number): string {
   const period = hour >= 12 ? 'PM' : 'AM'
@@ -316,6 +317,158 @@ function CalculatorResults({ results }: CalculatorResultsProps) {
   )
 }
 
+type NapItem = {
+  id: string
+  durationMinutes: number
+  time: string
+  title: string
+  tag: string
+  desc: string
+}
+
+type NapCardProps = {
+  nap: NapItem
+  isSet: boolean
+  onToggleAlarm: () => void
+}
+
+function NapCard({ nap, isSet, onToggleAlarm }: NapCardProps) {
+  const isNasa = nap.durationMinutes === 26
+  const isCycle = nap.durationMinutes === 90
+
+  return (
+    <View
+      className={`rounded-3xl border p-5 shadow-sm ${
+        isNasa
+          ? 'border-amber-500/80 bg-amber-50/10 dark:border-amber-600/50 dark:bg-amber-950/10'
+          : isCycle
+          ? 'border-emerald-500/80 bg-emerald-50/10 dark:border-emerald-600/50 dark:bg-emerald-950/10'
+          : 'border-neutral-200/40 bg-white dark:border-neutral-800/30 dark:bg-neutral-900/50'
+      }`}
+    >
+      <View className="flex-row items-center justify-between">
+        <View className="flex-row items-center gap-1.5">
+          <Text className="text-xs font-black text-neutral-900 dark:text-neutral-50">
+            {nap.title}
+          </Text>
+          <View
+            className={`rounded-full px-2 py-0.5 ${
+              isNasa
+                ? 'bg-amber-500'
+                : isCycle
+                ? 'bg-emerald-500'
+                : 'bg-neutral-200 dark:bg-neutral-700'
+            }`}
+          >
+            <Text
+              className={`text-[8px] font-bold uppercase ${
+                isNasa || isCycle ? 'text-white' : 'text-neutral-700 dark:text-neutral-300'
+              }`}
+            >
+              {nap.tag}
+            </Text>
+          </View>
+        </View>
+
+        {isNasa ? (
+          <FlameIcon className="text-amber-500" width={16} height={16} />
+        ) : isCycle ? (
+          <MoonIcon className="text-emerald-500" width={16} height={16} />
+        ) : (
+          <AlarmIcon className="text-neutral-400 dark:text-neutral-500" width={16} height={16} />
+        )}
+      </View>
+
+      <View className="mt-3 flex-row items-end justify-between">
+        <View>
+          <Text className="text-[10px] font-bold text-neutral-400 dark:text-neutral-500">
+            {translate('home.wake_up_at')}
+          </Text>
+          <Text className="text-3xl font-black tracking-tight text-neutral-900 dark:text-neutral-50">
+            {nap.time}
+          </Text>
+        </View>
+
+        <Pressable
+          onPress={onToggleAlarm}
+          className={`flex-row items-center gap-1.5 rounded-2xl px-4 py-2.5 active:opacity-85 ${
+            isSet ? 'bg-emerald-500' : 'bg-[#D21F17] dark:bg-red-600'
+          }`}
+        >
+          <AlarmIcon className="text-white" width={12} height={12} />
+          <Text className="text-xs font-bold text-white">
+            {isSet ? translate('common.alarm_set') : translate('common.set_alarm')}
+          </Text>
+        </Pressable>
+      </View>
+
+      <Text className="mt-3 border-t border-neutral-100 pt-2.5 text-[10px] leading-relaxed font-semibold text-neutral-500 dark:border-neutral-800/50 dark:text-neutral-400">
+        {nap.desc}
+      </Text>
+    </View>
+  )
+}
+
+type NapConfig = {
+  mins: number
+  title: string
+  tag: string
+  desc: string
+}
+
+function PowerNapsView() {
+  const [activeAlarm, setActiveAlarm] = React.useState<string | null>(null)
+
+  const naps = React.useMemo(() => {
+    const now = new Date()
+    const baseHour = now.getHours()
+    const baseMinute = now.getMinutes()
+    const prepMinutes = 5
+
+    const calcNap = ({ mins, title, tag, desc }: NapConfig) => {
+      const totalMinutes = baseHour * 60 + baseMinute + mins + prepMinutes
+      const wakeHour = Math.floor(totalMinutes / 60) % 24
+      const wakeMin = Math.round(totalMinutes % 60)
+      return {
+        id: `nap-${mins}`,
+        durationMinutes: mins,
+        time: formatTime(wakeHour, wakeMin),
+        title: translate(title as any),
+        tag: translate(tag as any),
+        desc: translate(desc as any),
+      }
+    }
+
+    return [
+      calcNap({ mins: 20, title: 'calculator.nap_20_title', tag: 'calculator.nap_20_tag', desc: 'calculator.nap_20_desc' }),
+      calcNap({ mins: 26, title: 'calculator.nap_26_title', tag: 'calculator.nap_26_tag', desc: 'calculator.nap_26_desc' }),
+      calcNap({ mins: 90, title: 'calculator.nap_90_title', tag: 'calculator.nap_90_tag', desc: 'calculator.nap_90_desc' }),
+    ]
+  }, [])
+
+  return (
+    <View className="flex-col gap-3">
+      <View className="my-2">
+        <Text className="text-sm font-extrabold text-neutral-900 dark:text-neutral-100">
+          {translate('calculator.nap_section_title')}
+        </Text>
+        <Text className="mt-0.5 text-[10px] leading-relaxed font-semibold text-neutral-400 dark:text-neutral-500">
+          {translate('calculator.nap_section_subtitle')}
+        </Text>
+      </View>
+
+      {naps.map((nap) => (
+        <NapCard
+          key={nap.id}
+          nap={nap}
+          isSet={activeAlarm === nap.time}
+          onToggleAlarm={() => setActiveAlarm(activeAlarm === nap.time ? null : nap.time)}
+        />
+      ))}
+    </View>
+  )
+}
+
 function useCalculatorResults(mode: ModeType, selectedHour: number, selectedMinute: number) {
   return React.useMemo(() => {
     const selectedTotal = selectedHour * 60 + selectedMinute
@@ -368,6 +521,7 @@ function useCalculatorResults(mode: ModeType, selectedHour: number, selectedMinu
 }
 
 export function CalculatorScreen() {
+  const [calcCategory, setCalcCategory] = React.useState<CalcCategory>('night')
   const [mode, setMode] = React.useState<ModeType>('wakeup')
   const [selectedHour, setSelectedHour] = React.useState<number>(7)
   const [selectedMinute, setSelectedMinute] = React.useState<number>(0)
@@ -406,27 +560,65 @@ export function CalculatorScreen() {
           </Text>
         </View>
 
-        <BentoControlCard
-          mode={mode}
-          setMode={setMode}
-          selectedHour={selectedHour}
-          selectedMinute={selectedMinute}
-          setSelectedHour={setSelectedHour}
-          setSelectedMinute={setSelectedMinute}
-          hourOptions={hourOptions}
-          minuteOptions={minuteOptions}
-        />
-
-        <View className="my-2">
-          <Text className="text-sm font-extrabold text-neutral-900 dark:text-neutral-100">
-            {mode === 'wakeup' ? translate('calculator.result_bedtime_text') : translate('calculator.result_wakeup_text')}
-          </Text>
-          <Text className="mt-0.5 text-[10px] leading-relaxed font-semibold text-neutral-400 dark:text-neutral-500">
-            {translate('calculator.transition_footnote')}
-          </Text>
+        {/* Category Selector Tab */}
+        <View className="mb-4 flex-row rounded-2xl border border-neutral-200/40 bg-white p-1 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
+          <Pressable
+            onPress={() => setCalcCategory('night')}
+            className={`flex-1 items-center justify-center rounded-xl py-2.5 ${
+              calcCategory === 'night' ? 'bg-[#D21F17] dark:bg-red-600' : ''
+            }`}
+          >
+            <Text
+              className={`text-xs font-black ${
+                calcCategory === 'night' ? 'text-white' : 'text-neutral-500 dark:text-neutral-400'
+              }`}
+            >
+              {translate('calculator.tab_night')}
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setCalcCategory('nap')}
+            className={`flex-1 items-center justify-center rounded-xl py-2.5 ${
+              calcCategory === 'nap' ? 'bg-[#D21F17] dark:bg-red-600' : ''
+            }`}
+          >
+            <Text
+              className={`text-xs font-black ${
+                calcCategory === 'nap' ? 'text-white' : 'text-neutral-500 dark:text-neutral-400'
+              }`}
+            >
+              {translate('calculator.tab_nap')}
+            </Text>
+          </Pressable>
         </View>
 
-        <CalculatorResults results={results} />
+        {calcCategory === 'night' ? (
+          <>
+            <BentoControlCard
+              mode={mode}
+              setMode={setMode}
+              selectedHour={selectedHour}
+              selectedMinute={selectedMinute}
+              setSelectedHour={setSelectedHour}
+              setSelectedMinute={setSelectedMinute}
+              hourOptions={hourOptions}
+              minuteOptions={minuteOptions}
+            />
+
+            <View className="my-2">
+              <Text className="text-sm font-extrabold text-neutral-900 dark:text-neutral-100">
+                {mode === 'wakeup' ? translate('calculator.result_bedtime_text') : translate('calculator.result_wakeup_text')}
+              </Text>
+              <Text className="mt-0.5 text-[10px] leading-relaxed font-semibold text-neutral-400 dark:text-neutral-500">
+                {translate('calculator.transition_footnote')}
+              </Text>
+            </View>
+
+            <CalculatorResults results={results} />
+          </>
+        ) : (
+          <PowerNapsView />
+        )}
       </ScrollView>
     </View>
   )
