@@ -1,5 +1,4 @@
 import type { ConfigContext, ExpoConfig } from '@expo/config'
-import type { AppIconBadgeConfig } from 'app-icon-badge/types'
 
 import packageJSON from './package.json'
 
@@ -29,22 +28,6 @@ const schemes: Record<AppEnv, string> = {
 
 const EXPO_ACCOUNT_OWNER = process.env.EXPO_ACCOUNT_OWNER
 const EAS_PROJECT_ID = process.env.EAS_PROJECT_ID
-
-const appIconBadgeConfig: AppIconBadgeConfig = {
-  enabled: appEnv !== 'production',
-  badges: [
-    {
-      text: appEnv,
-      type: 'banner',
-      color: 'white',
-    },
-    {
-      text: packageJSON.version,
-      type: 'ribbon',
-      color: 'white',
-    },
-  ],
-}
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
@@ -133,7 +116,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
     'expo-localization',
     'expo-router',
-    ['app-icon-badge', appIconBadgeConfig],
     ['react-native-edge-to-edge'],
     '@react-native-google-signin/google-signin',
   ],
