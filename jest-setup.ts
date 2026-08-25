@@ -95,6 +95,17 @@ jest.mock('react-native-mmkv', () => ({
   })),
 }))
 
+// Mock @react-native-google-signin/google-signin
+jest.mock('@react-native-google-signin/google-signin', () => ({
+  GoogleSignin: {
+    configure: jest.fn(),
+    hasPlayServices: jest.fn(() => Promise.resolve(true)),
+    signIn: jest.fn(() => Promise.resolve({ data: { idToken: 'mock-token' } })),
+    signOut: jest.fn(() => Promise.resolve()),
+    isSignedIn: jest.fn(() => Promise.resolve(false)),
+  },
+}))
+
 // Global window object setup for React Native testing
 // @ts-expect-error
 global.window = {}

@@ -76,7 +76,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   android: {
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
-      backgroundColor: '#2E3C4B',
+      backgroundColor: '#09090B',
     },
     package: packages[appEnv],
   },
@@ -88,7 +88,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-splash-screen',
       {
-        backgroundColor: '#2E3C4B',
+        backgroundColor: '#09090B',
         image: './assets/splash-icon.png',
         imageWidth: 150,
       },
@@ -135,6 +135,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-router',
     ['app-icon-badge', appIconBadgeConfig],
     ['react-native-edge-to-edge'],
+    '@react-native-google-signin/google-signin',
   ],
   ...(EAS_PROJECT_ID
     ? {

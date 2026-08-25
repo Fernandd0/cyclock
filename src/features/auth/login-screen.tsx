@@ -10,9 +10,9 @@ export function LoginScreen() {
   const router = useRouter()
   const signIn = useAuthStore.use.signIn()
 
-  const onSubmit: LoginFormProps['onSubmit'] = (data) => {
-    console.log(data)
-    signIn({ access: 'access-token', refresh: 'refresh-token' })
+  const onGoogleSuccess: LoginFormProps['onGoogleSuccess'] = (googleUser) => {
+    const idToken = googleUser?.idToken || 'google-access-token'
+    signIn({ access: idToken, refresh: 'google-refresh-token' })
     router.push('/')
   }
 
@@ -24,7 +24,7 @@ export function LoginScreen() {
   return (
     <>
       <FocusAwareStatusBar />
-      <LoginForm onSubmit={onSubmit} onSkip={onSkip} />
+      <LoginForm onGoogleSuccess={onGoogleSuccess} onSkip={onSkip} />
     </>
   )
 }
