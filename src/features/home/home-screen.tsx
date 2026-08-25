@@ -17,6 +17,7 @@ import {
   UserIcon,
 } from '@/components/ui/icons'
 import { useAuthStore as useAuth } from '@/features/auth/use-auth-store'
+import { setNativeAlarm } from '@/lib/alarm'
 import { translate, useSelectedLanguage } from '@/lib/i18n'
 
 import {
@@ -50,17 +51,17 @@ type QuickAltCardProps = {
 function QuickAltCard({ item, activeAlarm, onSetAlarm }: QuickAltCardProps) {
   const isSet = activeAlarm === item.time
   return (
-    <View className="flex-1 justify-between rounded-2xl bg-white/10 p-3.5 dark:bg-black/20">
-      <View className="flex-row items-center justify-between">
-        <Text className="text-[9px] font-bold text-[#F3C5C3] dark:text-[#BA8C8A]">
+    <View className="min-w-0 flex-1 justify-between rounded-2xl bg-white/10 p-3 dark:bg-black/20">
+      <View className="flex-row items-center justify-between gap-1">
+        <Text className="flex-1 shrink text-[9px] font-bold text-[#F3C5C3] dark:text-[#BA8C8A]" numberOfLines={1}>
           {item.cycles} {translate('common.cycles')} · {item.label}
         </Text>
-        <Text className="text-[9px] font-bold text-white/70">
+        <Text className="shrink-0 text-[9px] font-bold text-white/70">
           {item.duration}
         </Text>
       </View>
 
-      <Text className="mt-2 text-xl font-black text-white">
+      <Text className="mt-1.5 text-lg font-black text-white">
         {item.time}
       </Text>
 
@@ -106,45 +107,45 @@ function QuickSleepNow({ activeAlarm, onSetAlarm }: QuickSleepNowProps) {
   }, [])
 
   return (
-    <View className="rounded-3xl border border-[#D21F17]/10 bg-[#D21F17] p-5 dark:border-red-900/30 dark:bg-[#7C120E]">
-      <View className="flex-row items-center justify-between">
-        <View className="flex-row items-center gap-2">
-          <MoonIcon className="text-[#F5F2EB] dark:text-[#EBE7DD]" width={16} height={16} />
-          <Text className="text-xs font-bold text-[#F5F2EB]/90 dark:text-[#EBE7DD]/80">
+    <View className="w-full overflow-hidden rounded-3xl border border-[#D21F17]/10 bg-[#D21F17] p-4 shadow-sm dark:border-red-900/30 dark:bg-[#7C120E]">
+      <View className="flex-row items-center justify-between gap-2">
+        <View className="flex-1 shrink flex-row items-center gap-1.5">
+          <MoonIcon className="shrink-0 text-[#F5F2EB] dark:text-[#EBE7DD]" width={15} height={15} />
+          <Text className="flex-1 shrink text-xs font-bold text-[#F5F2EB]/90 dark:text-[#EBE7DD]/80" numberOfLines={1}>
             {translate('home.sleep_now_title')}
           </Text>
         </View>
-        <Text className="text-[9px] font-bold text-[#F3C5C3] dark:text-[#BA8C8A]">
+        <Text className="shrink-0 text-[9px] font-bold text-[#F3C5C3] dark:text-[#BA8C8A]">
           {translate('home.transition_note')}
         </Text>
       </View>
 
-      <View className="mt-4 rounded-2xl bg-white/20 p-4 dark:bg-black/30">
-        <View className="flex-row items-center justify-between">
-          <View className="flex-row items-center gap-1.5">
-            <View className="rounded-full bg-emerald-500 px-2 py-0.5">
+      <View className="mt-3.5 rounded-2xl bg-white/20 p-3.5 dark:bg-black/30">
+        <View className="flex-row items-center justify-between gap-2">
+          <View className="flex-1 shrink flex-row items-center gap-1.5">
+            <View className="shrink-0 rounded-full bg-emerald-500 px-2 py-0.5">
               <Text className="text-[8px] font-bold text-white uppercase">{translate('home.ideal_tag')}</Text>
             </View>
-            <Text className="text-[10px] font-bold text-[#F3C5C3] dark:text-[#BA8C8A]">
+            <Text className="flex-1 shrink text-[10px] font-bold text-[#F3C5C3] dark:text-[#BA8C8A]" numberOfLines={1}>
               {translate('home.ideal_desc')}
             </Text>
           </View>
-          <MoonIcon className="text-amber-300" width={14} height={14} />
+          <MoonIcon className="shrink-0 text-amber-300" width={14} height={14} />
         </View>
 
-        <View className="mt-2 flex-row items-end justify-between">
-          <View>
+        <View className="mt-2 flex-row items-end justify-between gap-2">
+          <View className="flex-1 shrink">
             <Text className="text-xs font-semibold text-[#F3C5C3] dark:text-[#BA8C8A]">
               {translate('home.wake_up_at')}
             </Text>
-            <Text className="text-3xl font-black tracking-tight text-white">
+            <Text className="text-2xl font-black tracking-tight text-white">
               {ideal.time}
             </Text>
           </View>
 
           <Pressable
             onPress={() => onSetAlarm(ideal.time)}
-            className={`flex-row items-center gap-1.5 rounded-xl px-4 py-2 active:opacity-85 ${
+            className={`shrink-0 flex-row items-center gap-1.5 rounded-xl px-3.5 py-2 active:opacity-85 ${
               activeAlarm === ideal.time ? 'bg-emerald-500' : 'bg-white/25'
             }`}
           >
@@ -301,7 +302,11 @@ export function HomeScreen() {
   }, [language])
 
   const handleSetAlarm = (time: string) => {
-    setActiveAlarm(activeAlarm === time ? null : time)
+    const nextState = activeAlarm === time ? null : time
+    setActiveAlarm(nextState)
+    if (nextState) {
+      setNativeAlarm(time, 'Cyclock - Alarma de Sueño')
+    }
   }
 
   const handleEditHero = () => {

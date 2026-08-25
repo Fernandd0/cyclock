@@ -3,6 +3,7 @@ import { Pressable, ScrollView } from 'react-native'
 
 import { FocusAwareStatusBar, Select, Text, View } from '@/components/ui'
 import { AlarmIcon, FlameIcon, MoonIcon } from '@/components/ui/icons'
+import { setNativeAlarm } from '@/lib/alarm'
 import { translate } from '@/lib/i18n'
 
 type ModeType = 'wakeup' | 'bedtime'
@@ -309,7 +310,13 @@ function CalculatorResults({ results }: CalculatorResultsProps) {
             isExpanded={isExpanded}
             isSet={isSet}
             onToggleExpand={() => setExpandedCycle(isExpanded ? null : res.cycles)}
-            onToggleAlarm={() => setActiveAlarm(isSet ? null : res.time)}
+            onToggleAlarm={() => {
+              const nextState = isSet ? null : res.time
+              setActiveAlarm(nextState)
+              if (nextState) {
+                setNativeAlarm(res.time, `Cyclock - Sueño (${res.cycles} ciclos)`)
+              }
+            }}
           />
         )
       })}
@@ -462,7 +469,13 @@ function PowerNapsView() {
           key={nap.id}
           nap={nap}
           isSet={activeAlarm === nap.time}
-          onToggleAlarm={() => setActiveAlarm(activeAlarm === nap.time ? null : nap.time)}
+          onToggleAlarm={() => {
+            const nextState = activeAlarm === nap.time ? null : nap.time
+            setActiveAlarm(nextState)
+            if (nextState) {
+              setNativeAlarm(nap.time, `Cyclock - Siesta (${nap.title})`)
+            }
+          }}
         />
       ))}
     </View>
