@@ -212,7 +212,7 @@ function BentoSleepNowCard({ isActive, onPress }: BentoSleepNowCardProps) {
   return (
     <Pressable
       onPress={onPress}
-      className={`size-full justify-between rounded-3xl p-5 shadow-sm active:opacity-90 ${
+      className={`h-[228px] w-full flex-col justify-between rounded-3xl p-5 shadow-sm active:opacity-90 ${
         isActive
           ? 'border border-[#B71811]/10 bg-[#B71811] dark:bg-[#7C120E]'
           : 'border border-[#D21F17]/10 bg-[#D21F17] dark:bg-[#9B1E1A]'

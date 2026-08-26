@@ -1,7 +1,7 @@
 import Env from 'env'
 import { Image } from 'expo-image'
 import * as React from 'react'
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView } from 'react-native'
+import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView } from 'react-native'
 import Svg, { Path } from 'react-native-svg'
 
 import { Text, View } from '@/components/ui'
@@ -11,7 +11,8 @@ import { translate } from '@/lib/i18n'
 let GoogleSignin: any = null
 if (Platform.OS !== 'web') {
   try {
-    GoogleSignin = require('@react-native-google-signin/google-signin').GoogleSignin
+    const googleModule = require('@react-native-google-signin/google-signin')
+    GoogleSignin = googleModule.GoogleSignin || googleModule.default?.GoogleSignin || googleModule
   } catch (e) {
     console.warn('GoogleSignin require note:', e)
   }
@@ -127,11 +128,16 @@ function GoogleBlock({ onGoogleSuccess }: GoogleBlockProps) {
       setIsSigningIn(true)
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true })
       const userInfo = await GoogleSignin.signIn()
-      if (onGoogleSuccess && userInfo.data) {
-        onGoogleSuccess(userInfo.data)
+      const userData = userInfo?.data || userInfo
+      if (onGoogleSuccess && userData) {
+        onGoogleSuccess(userData)
       }
-    } catch (error) {
+    } catch (error: any) {
       console.warn('Google Sign-In note:', error)
+      Alert.alert(
+        'Google Sign-In',
+        error?.message || 'No se pudo completar el inicio de sesión con Google. Por favor, intenta de nuevo.'
+      )
     } finally {
       setIsSigningIn(false)
     }
