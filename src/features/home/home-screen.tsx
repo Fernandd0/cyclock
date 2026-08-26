@@ -1,3 +1,4 @@
+import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
 import * as React from 'react'
 import { Pressable } from 'react-native'
@@ -11,11 +12,14 @@ import {
 } from '@/components/ui'
 import {
   AlarmIcon,
-  BedIcon,
-  FlameIcon,
   MoonIcon,
   UserIcon,
 } from '@/components/ui/icons'
+import {
+  PixelAlarmIcon,
+  PixelBedIcon,
+  PixelFlameIcon,
+} from '@/components/ui/icons/pixel-icons'
 import { useAuthStore as useAuth } from '@/features/auth/use-auth-store'
 import { setNativeAlarm } from '@/lib/alarm'
 import { translate, useSelectedLanguage } from '@/lib/i18n'
@@ -212,19 +216,24 @@ function BentoSleepNowCard({ isActive, onPress }: BentoSleepNowCardProps) {
   return (
     <Pressable
       onPress={onPress}
-      className={`h-[228px] w-full flex-col justify-between rounded-3xl p-5 shadow-sm active:opacity-90 ${
+      className={`size-full flex-col justify-between rounded-3xl p-5 shadow-sm active:opacity-90 ${
         isActive
-          ? 'border border-[#B71811]/10 bg-[#B71811] dark:bg-[#7C120E]'
-          : 'border border-[#D21F17]/10 bg-[#D21F17] dark:bg-[#9B1E1A]'
+          ? 'border border-[#B71811]/20 bg-[#B71811] dark:bg-[#7C120E]'
+          : 'border border-[#D21F17]/20 bg-[#D21F17] dark:bg-[#9B1E1A]'
       }`}
     >
       <View className="flex-row items-center justify-between">
-        <View className="rounded-full bg-white/20 p-2">
-          <BedIcon className="text-white" width={16} height={16} />
+        <View className="rounded-2xl bg-white/20 p-2.5">
+          <PixelBedIcon size={22} color="#FFFFFF" />
+        </View>
+        <View className="rounded-md bg-black/20 px-2 py-0.5">
+          <Text className="text-[8px] font-black tracking-widest text-white/90 uppercase">
+            [ SLEEP NOW ]
+          </Text>
         </View>
       </View>
-      <View className="mt-8">
-        <Text className="text-sm font-bold text-white">
+      <View className="mt-6">
+        <Text className="text-base font-black text-white">
           {translate('home.btn_sleep_now')}
         </Text>
         <Text className="mt-0.5 text-[9px] font-bold text-[#F3C5C3] dark:text-[#BA8C8A]">
@@ -246,12 +255,15 @@ function BentoCalculateCard({ onPress }: BentoCalculateCardProps) {
       className="h-[110px] w-full justify-between rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm active:opacity-90 dark:border-neutral-800/30 dark:bg-neutral-900/50"
     >
       <View className="flex-row items-center justify-between">
-        <View className="rounded-full bg-neutral-100 p-2 dark:bg-neutral-800">
-          <AlarmIcon className="text-neutral-600 dark:text-neutral-300" width={16} height={16} />
+        <View className="rounded-2xl bg-red-500/10 p-2 dark:bg-red-500/20">
+          <PixelAlarmIcon size={18} color="#D21F17" />
         </View>
+        <Text className="text-[8px] font-black tracking-widest text-neutral-400 uppercase dark:text-neutral-500">
+          [ 90 MIN ]
+        </Text>
       </View>
       <View className="mt-2">
-        <Text className="text-sm font-bold text-neutral-900 dark:text-neutral-50">
+        <Text className="text-sm font-black text-neutral-900 dark:text-neutral-50">
           {translate('home.btn_calc_manual')}
         </Text>
         <Text className="mt-0.5 text-[9px] font-bold text-neutral-400 dark:text-neutral-500">
@@ -266,12 +278,15 @@ function BentoStreakCard() {
   return (
     <View className="h-[110px] w-full justify-between rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
       <View className="flex-row items-center justify-between">
-        <View className="rounded-full bg-amber-50 p-2 dark:bg-amber-950/20">
-          <FlameIcon className="text-amber-500 dark:text-amber-400" width={16} height={16} />
+        <View className="rounded-2xl bg-amber-500/10 p-2 dark:bg-amber-500/20">
+          <PixelFlameIcon size={18} color="#F59E0B" />
         </View>
+        <Text className="text-[8px] font-black tracking-widest text-amber-600 uppercase dark:text-amber-400">
+          [ STREAK ]
+        </Text>
       </View>
       <View className="mt-2">
-        <Text className="text-sm font-bold text-neutral-900 dark:text-neutral-50">
+        <Text className="text-sm font-black text-neutral-900 dark:text-neutral-50">
           {translate('home.btn_streak')}
         </Text>
         <Text className="mt-0.5 text-[9px] font-bold text-amber-600 dark:text-amber-400">
@@ -336,17 +351,28 @@ export function HomeScreen() {
             onPress={() => {
               if (isGuest) {
                 signOut()
+                router.replace('/login')
               } else {
-                router.push('/settings')
+                router.push('/profile')
               }
             }}
-            className="rounded-full border border-neutral-200 bg-white p-2.5 active:bg-neutral-100 dark:border-neutral-800 dark:bg-neutral-900/50 dark:active:bg-neutral-800/80"
+            className="relative size-10 overflow-hidden rounded-full border-2 border-neutral-200/80 bg-white shadow-xs active:opacity-80 dark:border-neutral-800 dark:bg-neutral-900"
           >
-            <UserIcon
-              className="text-neutral-700 dark:text-neutral-300"
-              width={20}
-              height={20}
-            />
+            {token?.user?.photo ? (
+              <Image
+                source={{ uri: token.user.photo }}
+                style={{ width: '100%', height: '100%' }}
+                contentFit="cover"
+              />
+            ) : (
+              <View className="size-full items-center justify-center">
+                <UserIcon
+                  className="text-neutral-700 dark:text-neutral-300"
+                  width={18}
+                  height={18}
+                />
+              </View>
+            )}
           </Pressable>
         </View>
 
@@ -355,15 +381,15 @@ export function HomeScreen() {
         <View className="mt-2 flex-col gap-2">
           <HeroCard onPressEdit={handleEditHero} />
 
-          <View className="flex-row items-stretch gap-2">
-            <View className="flex-1">
+          <View className="h-[228px] flex-row gap-2">
+            <View className="h-full flex-1">
               <BentoSleepNowCard
                 isActive={showSleepNow}
                 onPress={() => setShowSleepNow(!showSleepNow)}
               />
             </View>
 
-            <View className="flex-1 flex-col gap-2">
+            <View className="h-full flex-1 flex-col gap-2">
               <BentoCalculateCard
                 onPress={() => router.push('/calculator')}
               />

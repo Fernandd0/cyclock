@@ -1,6 +1,8 @@
 import type { OptionType } from '@/components/ui'
 import type { ColorSchemeType } from '@/lib/hooks/use-selected-theme'
+import { Image } from 'expo-image'
 
+import { useRouter } from 'expo-router'
 import * as React from 'react'
 import { Pressable } from 'react-native'
 import Svg, { Path } from 'react-native-svg'
@@ -34,28 +36,51 @@ function LogOutIcon({ className, width = 16, height = 16 }: { className?: string
 }
 
 function ProfileCard() {
+  const router = useRouter()
+  const signOut = useAuth.use.signOut()
   const token = useAuth.use.token()
   const isGuest = token?.access === 'guest-access'
+  const user = token?.user
 
   return (
-    <View className="min-h-[110px] w-[62%] justify-between rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
+    <Pressable
+      onPress={() => {
+        if (isGuest) {
+          signOut()
+          router.replace('/login')
+        } else {
+          router.push('/profile')
+        }
+      }}
+      className="min-h-[110px] w-[62%] justify-between rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm active:opacity-85 dark:border-neutral-800/30 dark:bg-neutral-900/50"
+    >
       <View className="flex-row items-center gap-2.5">
-        <View className="size-8 items-center justify-center rounded-full bg-red-50 dark:bg-red-950/20">
-          <UserIcon className="text-[#D21F17] dark:text-red-400" width={16} height={16} />
+        <View className="relative size-9 overflow-hidden rounded-full border border-neutral-200/60 bg-red-50 dark:border-neutral-800 dark:bg-red-950/20">
+          {user?.photo ? (
+            <Image
+              source={{ uri: user.photo }}
+              style={{ width: '100%', height: '100%' }}
+              contentFit="cover"
+            />
+          ) : (
+            <View className="size-full items-center justify-center">
+              <UserIcon className="text-[#D21F17] dark:text-red-400" width={16} height={16} />
+            </View>
+          )}
         </View>
         <View className="flex-col">
           <Text className="text-[10px] font-black tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
             {translate('home.profile_bar_title')}
           </Text>
-          <Text className="text-sm font-black tracking-tight text-neutral-900 dark:text-neutral-50">
-            {isGuest ? translate('settings.profile_guest') : translate('settings.profile_user')}
+          <Text className="text-xs font-black tracking-tight text-neutral-900 dark:text-neutral-50" numberOfLines={1}>
+            {user?.name || (isGuest ? translate('settings.profile_guest') : translate('settings.profile_user'))}
           </Text>
         </View>
       </View>
-      <Text className="mt-2 text-[9px] leading-normal font-semibold text-neutral-400 dark:text-neutral-500">
-        Cyclock
+      <Text className="mt-2 text-[9px] leading-normal font-semibold text-[#D21F17] dark:text-red-400">
+        Configurar Perfil →
       </Text>
-    </View>
+    </Pressable>
   )
 }
 

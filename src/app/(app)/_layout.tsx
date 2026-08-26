@@ -55,6 +55,14 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
+        name="profile"
+        options={{
+          headerShown: false,
+          href: null,
+        }}
+      />
+
+      <Tabs.Screen
         name="settings"
         options={{
           title: translate('settings.title'),

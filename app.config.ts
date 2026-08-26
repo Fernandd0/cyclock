@@ -62,6 +62,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       backgroundColor: '#09090B',
     },
     package: packages[appEnv],
+    permissions: [
+      'com.android.alarm.permission.SET_ALARM',
+      'android.permission.SET_ALARM',
+      'android.permission.SCHEDULE_EXACT_ALARM',
+    ],
   },
   web: {
     favicon: './assets/favicon.png',

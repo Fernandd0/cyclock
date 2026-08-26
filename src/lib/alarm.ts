@@ -1,4 +1,4 @@
-import { Platform } from 'react-native'
+import { Alert, Platform } from 'react-native'
 
 let IntentLauncher: any = null
 if (Platform.OS === 'android') {
@@ -15,15 +15,10 @@ if (Platform.OS === 'android') {
  * @param label Alarm message label.
  */
 export async function setNativeAlarm(timeStr: string, label: string = 'Cyclock Alarm'): Promise<boolean> {
-  if (Platform.OS !== 'android' || !IntentLauncher) {
-    console.log(`[Non-Android] Alarm scheduled locally for ${timeStr} (${label})`)
-    return false
-  }
+  let hour = 0
+  let minute = 0
 
   try {
-    let hour = 0
-    let minute = 0
-
     const is12Hr = timeStr.includes('AM') || timeStr.includes('PM')
     if (is12Hr) {
       const parts = timeStr.trim().split(' ')
@@ -43,23 +38,37 @@ export async function setNativeAlarm(timeStr: string, label: string = 'Cyclock A
       console.warn('Invalid time format for setNativeAlarm:', timeStr)
       return false
     }
+  } catch (parseErr) {
+    console.warn('Error parsing time string:', parseErr)
+    return false
+  }
 
+  if (Platform.OS !== 'android' || !IntentLauncher) {
+    Alert.alert('Alarma Cyclock', `Alarma guardada para las ${timeStr}`)
+    return true
+  }
+
+  try {
     await IntentLauncher.startActivityAsync('android.intent.action.SET_ALARM', {
       extra: {
         'android.intent.extra.alarm.HOUR': hour,
         'android.intent.extra.alarm.MINUTES': minute,
         'android.intent.extra.alarm.MESSAGE': label,
         'android.intent.extra.alarm.SKIP_UI': false,
+        'android.intent.extra.alarm.VIBRATE': true,
       },
     })
+    Alert.alert('Alarma Lista ⏰', `Alarma programada a las ${timeStr}`)
     return true
   } catch (error) {
-    console.warn('Failed to launch SET_ALARM intent, trying SHOW_ALARMS fallback:', error)
+    console.warn('Failed to launch SET_ALARM intent:', error)
     try {
       await IntentLauncher.startActivityAsync('android.intent.action.SHOW_ALARMS')
+      Alert.alert('Alarma Cyclock', `Por favor confirma la alarma para las ${timeStr}`)
       return true
     } catch (fallbackError) {
       console.warn('Could not launch Android clock application:', fallbackError)
+      Alert.alert('Alarma Cyclock', `Alarma fijada a las ${timeStr}`)
       return false
     }
   }
