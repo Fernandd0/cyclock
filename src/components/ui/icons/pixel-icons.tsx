@@ -6,6 +6,27 @@ type PixelIconProps = {
   color?: string
 }
 
+export function PixelSunIcon({ size = 105 }: PixelIconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 16 16">
+      {/* Sun Core */}
+      <Rect x={4} y={4} width={8} height={8} fill="#FBBF24" />
+
+      {/* Sun Main Rays */}
+      <Rect x={7} y={1} width={2} height={2} fill="#F59E0B" />
+      <Rect x={7} y={13} width={2} height={2} fill="#F59E0B" />
+      <Rect x={1} y={7} width={2} height={2} fill="#F59E0B" />
+      <Rect x={13} y={7} width={2} height={2} fill="#F59E0B" />
+
+      {/* Sun Diagonal Rays */}
+      <Rect x={2} y={2} width={2} height={2} fill="#F59E0B" opacity={0.8} />
+      <Rect x={12} y={2} width={2} height={2} fill="#F59E0B" opacity={0.8} />
+      <Rect x={2} y={12} width={2} height={2} fill="#F59E0B" opacity={0.8} />
+      <Rect x={12} y={12} width={2} height={2} fill="#F59E0B" opacity={0.8} />
+    </Svg>
+  )
+}
+
 export function PixelBedIcon({ size = 20, color = '#FFFFFF' }: PixelIconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 16 16">

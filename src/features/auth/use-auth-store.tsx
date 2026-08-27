@@ -40,10 +40,10 @@ const _useAuthStore = create<AuthState>((set, get) => ({
   hydrate: () => {
     try {
       const userToken = getToken()
-      if (userToken !== null) {
+      if (userToken !== null && userToken.access && userToken.access !== 'guest-access') {
         get().signIn(userToken)
       } else {
-        get().signIn({ access: 'guest-access', refresh: 'guest-refresh' })
+        get().signOut()
       }
     } catch (e) {
       console.error(e)

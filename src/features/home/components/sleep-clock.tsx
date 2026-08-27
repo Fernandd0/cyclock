@@ -2,6 +2,7 @@ import * as React from 'react'
 import Svg, { Rect } from 'react-native-svg'
 
 import { Text, View } from '@/components/ui'
+import { PixelSunIcon } from '@/components/ui/icons/pixel-icons'
 import { useAuthStore } from '@/features/auth/use-auth-store'
 import { translate } from '@/lib/i18n'
 
@@ -32,17 +33,20 @@ export function SleepClock() {
   const dailyGoalCycles = user?.dailyGoalCycles || 5
   const dailyGoalHours = (dailyGoalCycles * 1.5).toFixed(1)
 
+  const currentHour = new Date().getHours()
+  const isDaytime = currentHour >= 6 && currentHour < 18
+
   return (
     <View className="my-3 flex-col items-center justify-center py-2">
-      {/* Large Pixel Moon Icon Centered on Top */}
+      {/* Large Dynamic Pixel Icon Centered on Top (Sun during day, Moon at night) */}
       <View className="items-center justify-center">
-        <PixelMoonIcon size={105} />
+        {isDaytime ? <PixelSunIcon size={105} /> : <PixelMoonIcon size={105} />}
       </View>
 
       {/* Large Daily Goal Typography Centered Below */}
       <View className="mt-2.5 flex-col items-center justify-center">
         <Text className="text-[10px] font-black tracking-widest text-neutral-400 uppercase dark:text-neutral-500">
-          {translate('sleep_clock.daily_goal') || 'Meta Diaria de Sueño'}
+          {isDaytime ? '[ DIA · META DE SUEÑO ]' : translate('sleep_clock.daily_goal') || 'Meta Diaria de Sueño'}
         </Text>
 
         <Text className="mt-0.5 text-3xl font-black tracking-tight text-neutral-900 dark:text-neutral-50">

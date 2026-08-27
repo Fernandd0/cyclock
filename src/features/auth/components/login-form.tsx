@@ -5,7 +5,7 @@ import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView } from 're
 import Svg, { Path } from 'react-native-svg'
 
 import { Text, View } from '@/components/ui'
-import { AlarmIcon, BedIcon, FlameIcon, MoonIcon } from '@/components/ui/icons'
+import { PixelAlarmIcon, PixelBedIcon } from '@/components/ui/icons/pixel-icons'
 import { translate } from '@/lib/i18n'
 
 let GoogleSignin: any = null
@@ -53,48 +53,37 @@ function BentoTips() {
   return (
     <View className="flex-row gap-2">
       <View className="w-[49%] rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
-        <View className="flex-row items-center gap-1.5">
-          <AlarmIcon className="text-emerald-500 dark:text-emerald-400" width={16} height={16} />
-          <Text className="text-[10px] font-black tracking-wider text-emerald-600 uppercase dark:text-emerald-400">
-            {translate('auth.tip_cycles')}
+        <View className="flex-row items-center justify-between">
+          <View className="rounded-2xl bg-emerald-500/10 p-2 dark:bg-emerald-500/20">
+            <PixelAlarmIcon size={18} color="#10B981" />
+          </View>
+          <Text className="text-[8px] font-black tracking-widest text-emerald-600 uppercase dark:text-emerald-400">
+            [ 90M REM ]
           </Text>
         </View>
+        <Text className="mt-2.5 text-xs font-black text-neutral-900 dark:text-neutral-50">
+          {translate('auth.tip_cycles')}
+        </Text>
         <Text className="mt-1 text-[10px] leading-relaxed font-semibold text-neutral-400 dark:text-neutral-500">
           {translate('auth.tip_cycles_desc')}
         </Text>
       </View>
 
       <View className="w-[49%] grow rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
-        <View className="flex-row items-center gap-1.5">
-          <BedIcon className="text-[#D21F17] dark:text-red-400" width={16} height={16} />
-          <Text className="text-[10px] font-black tracking-wider text-[#D21F17] uppercase dark:text-red-400">
-            {translate('auth.tip_efficiency')}
+        <View className="flex-row items-center justify-between">
+          <View className="rounded-2xl bg-red-500/10 p-2 dark:bg-red-500/20">
+            <PixelBedIcon size={18} color="#D21F17" />
+          </View>
+          <Text className="text-[8px] font-black tracking-widest text-[#D21F17] uppercase dark:text-red-400">
+            [ ALGORITMO ]
           </Text>
         </View>
+        <Text className="mt-2.5 text-xs font-black text-neutral-900 dark:text-neutral-50">
+          {translate('auth.tip_efficiency')}
+        </Text>
         <Text className="mt-1 text-[10px] leading-relaxed font-semibold text-neutral-400 dark:text-neutral-500">
           {translate('auth.tip_efficiency_desc')}
         </Text>
-      </View>
-    </View>
-  )
-}
-
-function FeaturePillsBar() {
-  return (
-    <View className="flex-row items-center justify-around rounded-2xl border border-neutral-200/30 bg-white/80 p-3 shadow-xs dark:border-neutral-800/30 dark:bg-neutral-900/40">
-      <View className="flex-row items-center gap-1">
-        <MoonIcon className="text-[#D21F17] dark:text-red-400" width={12} height={12} />
-        <Text className="text-[9px] font-black text-neutral-700 dark:text-neutral-300">90m Ciclos</Text>
-      </View>
-      <View className="h-3 w-[0.5px] bg-neutral-200 dark:bg-neutral-800" />
-      <View className="flex-row items-center gap-1">
-        <FlameIcon className="text-amber-500" width={12} height={12} />
-        <Text className="text-[9px] font-black text-neutral-700 dark:text-neutral-300">26m NASA Nap</Text>
-      </View>
-      <View className="h-3 w-[0.5px] bg-neutral-200 dark:bg-neutral-800" />
-      <View className="flex-row items-center gap-1">
-        <AlarmIcon className="text-emerald-500" width={12} height={12} />
-        <Text className="text-[9px] font-black text-neutral-700 dark:text-neutral-300">Sueño REM</Text>
       </View>
     </View>
   )
@@ -218,8 +207,6 @@ export function LoginForm({ onGoogleSuccess, onSkip = () => {} }: LoginFormProps
       >
         <View className="flex-col gap-3">
           <LoginHeader />
-
-          <FeaturePillsBar />
 
           <LoginFormCard onSkip={onSkip} onGoogleSuccess={onGoogleSuccess} />
 
