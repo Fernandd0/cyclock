@@ -26,14 +26,15 @@ const schemes: Record<AppEnv, string> = {
   production: 'cyclock',
 }
 
-const EXPO_ACCOUNT_OWNER = process.env.EXPO_ACCOUNT_OWNER
-const EAS_PROJECT_ID = process.env.EAS_PROJECT_ID
+const EXPO_ACCOUNT_OWNER = process.env.EXPO_ACCOUNT_OWNER || 'fernaddoo'
+const EAS_PROJECT_ID =
+  process.env.EAS_PROJECT_ID || '9d8195b4-a985-4b71-8300-0c4b5c526234'
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: appName,
   description: `${appName} Mobile App`,
-  ...(EXPO_ACCOUNT_OWNER ? { owner: EXPO_ACCOUNT_OWNER } : {}),
+  owner: EXPO_ACCOUNT_OWNER,
   scheme: schemes[appEnv],
   slug: 'cyclock',
   version: packageJSON.version,
@@ -43,7 +44,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   newArchEnabled: true,
   updates: {
     fallbackToCacheTimeout: 0,
-    ...(EAS_PROJECT_ID ? { url: `https://u.expo.dev/${EAS_PROJECT_ID}` } : {}),
+    url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
   },
   assetBundlePatterns: ['**/*'],
   ios: {
@@ -124,13 +125,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ['react-native-edge-to-edge'],
     '@react-native-google-signin/google-signin',
   ],
-  ...(EAS_PROJECT_ID
-    ? {
-        extra: {
-          eas: {
-            projectId: EAS_PROJECT_ID,
-          },
-        },
-      }
-    : {}),
+  extra: {
+    eas: {
+      projectId: EAS_PROJECT_ID,
+    },
+  },
 })
