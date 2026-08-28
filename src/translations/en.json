@@ -51,6 +51,8 @@
   "common": {
     "alarm_set": "Alarm set",
     "cycles": "Cycles",
+    "day": "Day",
+    "days": "Days",
     "duration": "Duration",
     "hours": "Hours",
     "ideal": "Ideal",
@@ -58,7 +60,8 @@
     "minimum": "Minimum",
     "quick": "Quick:",
     "recommended": "Recommended",
-    "set_alarm": "Set alarm"
+    "set_alarm": "Set alarm",
+    "streak_zero": "0 days streak"
   },
   "history": {
     "chart_title": "Last 7 nights",
@@ -112,8 +115,8 @@
     "language_title": "Language",
     "logout": "Log Out",
     "logout_sub": "Close session",
-    "profile_guest": "Active User",
-    "profile_user": "Guest User",
+    "profile_guest": "Guest User",
+    "profile_user": "Active User",
     "session_title": "Session",
     "theme": {
       "dark": "Dark",
@@ -129,7 +132,7 @@
   },
   "sleep_clock": {
     "cycles_val": "5 Cycles",
-    "daily_goal": "Daily Goal",
+    "daily_goal": "Daily Sleep Goal",
     "hours_val": "7.5 Hours"
   },
   "welcome": "Welcome to Cyclock"

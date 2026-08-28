@@ -9,6 +9,7 @@ export type UserType = {
   dailyGoalCycles?: number
   targetBedtime?: string
   targetWakeTime?: string
+  sleepStreak?: number
 }
 
 export type TokenType = {

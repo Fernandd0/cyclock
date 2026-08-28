@@ -275,6 +275,10 @@ function BentoCalculateCard({ onPress }: BentoCalculateCardProps) {
 }
 
 function BentoStreakCard() {
+  const token = useAuth.use.token()
+  const user = token?.user
+  const streak = user?.sleepStreak ?? 0
+
   return (
     <View className="h-[110px] w-full justify-between rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
       <View className="flex-row items-center justify-between">
@@ -287,10 +291,10 @@ function BentoStreakCard() {
       </View>
       <View className="mt-2">
         <Text className="text-sm font-black text-neutral-900 dark:text-neutral-50">
-          {translate('home.btn_streak')}
+          {streak} {streak === 1 ? translate('common.day') || 'Día' : translate('common.days') || 'Días'}
         </Text>
         <Text className="mt-0.5 text-[9px] font-bold text-amber-600 dark:text-amber-400">
-          {translate('home.btn_streak_sub')}
+          {streak === 0 ? 'Racha en 0 días' : translate('home.btn_streak_sub')}
         </Text>
       </View>
     </View>

@@ -51,6 +51,8 @@
   "common": {
     "alarm_set": "Alarma seteada",
     "cycles": "Ciclos",
+    "day": "Día",
+    "days": "Días",
     "duration": "Duración",
     "hours": "Horas",
     "ideal": "Ideal",
@@ -58,7 +60,8 @@
     "minimum": "Mínimo",
     "quick": "Rápidos:",
     "recommended": "Recomendado",
-    "set_alarm": "Set alarma"
+    "set_alarm": "Set alarma",
+    "streak_zero": "Racha en 0 días"
   },
   "history": {
     "chart_title": "Últimas 7 noches",
@@ -129,7 +132,7 @@
   },
   "sleep_clock": {
     "cycles_val": "5 Ciclos",
-    "daily_goal": "Meta Diaria",
+    "daily_goal": "Meta Diaria de Sueño",
     "hours_val": "7.5 Horas"
   },
   "welcome": "Bienvenido a Cyclock"

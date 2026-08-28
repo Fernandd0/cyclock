@@ -5,7 +5,6 @@ import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView } from 're
 import Svg, { Path } from 'react-native-svg'
 
 import { Text, View } from '@/components/ui'
-import { PixelAlarmIcon, PixelBedIcon } from '@/components/ui/icons/pixel-icons'
 import { translate } from '@/lib/i18n'
 
 let GoogleSignin: any = null
@@ -49,46 +48,6 @@ function LoginHeader() {
   )
 }
 
-function BentoTips() {
-  return (
-    <View className="flex-row gap-2">
-      <View className="w-[49%] rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
-        <View className="flex-row items-center justify-between">
-          <View className="rounded-2xl bg-emerald-500/10 p-2 dark:bg-emerald-500/20">
-            <PixelAlarmIcon size={18} color="#10B981" />
-          </View>
-          <Text className="text-[8px] font-black tracking-widest text-emerald-600 uppercase dark:text-emerald-400">
-            [ 90M REM ]
-          </Text>
-        </View>
-        <Text className="mt-2.5 text-xs font-black text-neutral-900 dark:text-neutral-50">
-          {translate('auth.tip_cycles')}
-        </Text>
-        <Text className="mt-1 text-[10px] leading-relaxed font-semibold text-neutral-400 dark:text-neutral-500">
-          {translate('auth.tip_cycles_desc')}
-        </Text>
-      </View>
-
-      <View className="w-[49%] grow rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
-        <View className="flex-row items-center justify-between">
-          <View className="rounded-2xl bg-red-500/10 p-2 dark:bg-red-500/20">
-            <PixelBedIcon size={18} color="#D21F17" />
-          </View>
-          <Text className="text-[8px] font-black tracking-widest text-[#D21F17] uppercase dark:text-red-400">
-            [ ALGORITMO ]
-          </Text>
-        </View>
-        <Text className="mt-2.5 text-xs font-black text-neutral-900 dark:text-neutral-50">
-          {translate('auth.tip_efficiency')}
-        </Text>
-        <Text className="mt-1 text-[10px] leading-relaxed font-semibold text-neutral-400 dark:text-neutral-500">
-          {translate('auth.tip_efficiency_desc')}
-        </Text>
-      </View>
-    </View>
-  )
-}
-
 type GoogleBlockProps = {
   onGoogleSuccess?: (googleUser?: any) => void
 }
@@ -97,9 +56,13 @@ function GoogleBlock({ onGoogleSuccess }: GoogleBlockProps) {
   const [isSigningIn, setIsSigningIn] = React.useState(false)
 
   React.useEffect(() => {
-    if (Platform.OS !== 'web' && GoogleSignin && Env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID) {
+    const webClientId =
+      Env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ||
+      '843128876286-a9tek7mjjid1tnn4m251br59t8lmp3jc.apps.googleusercontent.com'
+
+    if (Platform.OS !== 'web' && GoogleSignin) {
       GoogleSignin.configure({
-        webClientId: Env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+        webClientId,
         scopes: ['profile', 'email'],
       })
     }
@@ -123,10 +86,11 @@ function GoogleBlock({ onGoogleSuccess }: GoogleBlockProps) {
       }
     } catch (error: any) {
       console.warn('Google Sign-In note:', error)
-      Alert.alert(
-        'Google Sign-In',
-        error?.message || 'No se pudo completar el inicio de sesión con Google. Por favor, intenta de nuevo.'
-      )
+      const isDeveloperError = error?.message?.includes('DEVELOPER_ERROR') || error?.code === '10'
+      const message = isDeveloperError
+        ? 'Error de desarrollador: Falta agregar la huella SHA-1 de tu APK o el paquete com.cyclock.preview en la consola de Google Cloud.'
+        : error?.message || 'No se pudo completar el inicio de sesión con Google. Por favor, intenta de nuevo.'
+      Alert.alert('Google Sign-In', message)
     } finally {
       setIsSigningIn(false)
     }
@@ -201,16 +165,14 @@ export function LoginForm({ onGoogleSuccess, onSkip = () => {} }: LoginFormProps
       keyboardVerticalOffset={10}
     >
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
-        className="bg-[#FAFAFA] px-5 py-12 dark:bg-neutral-950"
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start' }}
+        className="bg-[#FAFAFA] px-5 pt-16 pb-12 dark:bg-neutral-950"
         showsVerticalScrollIndicator={false}
       >
-        <View className="flex-col gap-3">
+        <View className="flex-col gap-4">
           <LoginHeader />
 
           <LoginFormCard onSkip={onSkip} onGoogleSuccess={onGoogleSuccess} />
-
-          <BentoTips />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
