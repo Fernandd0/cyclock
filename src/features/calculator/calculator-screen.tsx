@@ -199,25 +199,20 @@ function CycleCard({
   onToggleExpand,
   onToggleAlarm,
 }: CycleCardProps) {
-  let widthClass = 'w-full'
   let borderClass = 'border-neutral-200/40 dark:border-neutral-800/30'
   let bgClass = 'bg-white dark:bg-neutral-900/50'
 
   if (res.cycles === 5) {
-    widthClass = 'w-full'
     borderClass = 'border-emerald-500/80 dark:border-emerald-600/60'
     bgClass = 'bg-emerald-50/10 dark:bg-emerald-950/10'
-  } else if (res.cycles === 6 || res.cycles === 4) {
-    widthClass = 'w-[48.5%]'
   } else if (res.cycles === 3) {
-    widthClass = 'w-full'
     borderClass = 'border-rose-200/60 dark:border-rose-950/40'
   }
 
   return (
     <Pressable
       onPress={onToggleExpand}
-      className={`${widthClass} justify-between rounded-3xl border ${bgClass} ${borderClass} p-4 shadow-sm`}
+      className={`w-full justify-between rounded-3xl border ${bgClass} ${borderClass} p-4 shadow-sm`}
     >
       <View>
         <View className="flex-row items-center justify-between">
@@ -258,7 +253,7 @@ function CycleCard({
       </View>
 
       <View className="mt-3 flex-row items-center justify-between gap-2">
-        <View className="rounded-full bg-neutral-100 px-2 py-0.5 dark:bg-neutral-800/80">
+        <View className="rounded-full bg-neutral-100 px-2.5 py-0.5 dark:bg-neutral-800/80">
           <Text className={`text-[9px] font-bold ${res.ratingColor}`}>
             {res.rating}
           </Text>
@@ -269,7 +264,7 @@ function CycleCard({
             e.stopPropagation()
             onToggleAlarm()
           }}
-          className={`flex-row items-center gap-1 rounded-xl px-2.5 py-1 active:opacity-85 ${
+          className={`flex-row items-center gap-1 rounded-xl px-3 py-1.5 active:opacity-85 ${
             isSet ? 'bg-emerald-500' : 'bg-neutral-100 dark:bg-neutral-800'
           }`}
         >
@@ -298,7 +293,7 @@ function CalculatorResults({ results }: CalculatorResultsProps) {
   const [activeAlarm, setActiveAlarm] = React.useState<string | null>(null)
 
   return (
-    <View className="flex-row flex-wrap gap-2">
+    <View className="flex-col gap-2.5">
       {results.map((res) => {
         const isExpanded = expandedCycle === res.cycles
         const isSet = activeAlarm === res.time
