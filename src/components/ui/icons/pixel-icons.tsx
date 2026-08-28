@@ -79,6 +79,18 @@ export function PixelFlameIcon({ size = 20, color = '#F59E0B' }: PixelIconProps)
   )
 }
 
+export function PixelZapIcon({ size = 20, color = '#8B5CF6' }: PixelIconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 16 16">
+      <Rect x={8} y={1} width={4} height={2} fill={color} />
+      <Rect x={6} y={3} width={4} height={3} fill={color} />
+      <Rect x={4} y={6} width={8} height={2} fill={color} />
+      <Rect x={6} y={8} width={4} height={3} fill={color} />
+      <Rect x={4} y={11} width={4} height={4} fill={color} />
+    </Svg>
+  )
+}
+
 export function PixelUserIcon({ size = 20, color = '#D21F17' }: PixelIconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 16 16">

@@ -1,3 +1,4 @@
+import { useLocalSearchParams } from 'expo-router'
 import * as React from 'react'
 import { Pressable, ScrollView } from 'react-native'
 
@@ -103,13 +104,11 @@ function BentoControlCard({
           { label: '6:30 AM', h: 6, m: 30 },
           { label: '7:00 AM', h: 7, m: 0 },
           { label: '7:30 AM', h: 7, m: 30 },
-          { label: '8:00 AM', h: 8, m: 0 },
         ]
       : [
           { label: '10:00 PM', h: 22, m: 0 },
           { label: '10:30 PM', h: 22, m: 30 },
           { label: '11:00 PM', h: 23, m: 0 },
-          { label: '11:30 PM', h: 23, m: 30 },
         ]
   }, [mode])
 
@@ -529,7 +528,10 @@ function useCalculatorResults(mode: ModeType, selectedHour: number, selectedMinu
 }
 
 export function CalculatorScreen() {
-  const [calcCategory, setCalcCategory] = React.useState<CalcCategory>('night')
+  const params = useLocalSearchParams<{ tab?: string }>()
+  const [calcCategory, setCalcCategory] = React.useState<CalcCategory>(
+    params.tab === 'nap' ? 'nap' : 'night',
+  )
   const [mode, setMode] = React.useState<ModeType>('wakeup')
   const [selectedHour, setSelectedHour] = React.useState<number>(7)
   const [selectedMinute, setSelectedMinute] = React.useState<number>(0)

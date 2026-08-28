@@ -19,6 +19,7 @@ import {
   PixelAlarmIcon,
   PixelBedIcon,
   PixelFlameIcon,
+  PixelZapIcon,
 } from '@/components/ui/icons/pixel-icons'
 import { useAuthStore as useAuth } from '@/features/auth/use-auth-store'
 import { setNativeAlarm } from '@/lib/alarm'
@@ -52,31 +53,40 @@ type QuickAltCardProps = {
   onSetAlarm: (time: string) => void
 }
 
-function QuickAltCard({ item, activeAlarm, onSetAlarm }: QuickAltCardProps) {
+function QuickSleepNowRow({ item, activeAlarm, onSetAlarm }: QuickAltCardProps) {
   const isSet = activeAlarm === item.time
+  const isIdeal = item.cycles === 5
+
   return (
-    <View className="min-w-0 flex-1 justify-between rounded-2xl bg-white/10 p-3 dark:bg-black/20">
-      <View className="flex-row items-center justify-between gap-1">
-        <Text className="flex-1 shrink text-[9px] font-bold text-[#F3C5C3] dark:text-[#BA8C8A]" numberOfLines={1}>
-          {item.cycles} {translate('common.cycles')} · {item.label}
-        </Text>
-        <Text className="shrink-0 text-[9px] font-bold text-white/70">
-          {item.duration}
+    <View
+      className={`w-full flex-row items-center justify-between rounded-2xl p-3.5 ${
+        isIdeal ? 'bg-white/20 dark:bg-black/40' : 'bg-white/10 dark:bg-black/20'
+      }`}
+    >
+      <View className="flex-col">
+        <View className="flex-row items-center gap-1.5">
+          <Text className="text-[10px] font-extrabold text-white/90">
+            {item.cycles} {translate('common.cycles')} ({item.duration})
+          </Text>
+          {isIdeal && (
+            <View className="rounded-full bg-emerald-500 px-2 py-0.5">
+              <Text className="text-[8px] font-bold text-white uppercase">{translate('common.recommended')}</Text>
+            </View>
+          )}
+        </View>
+        <Text className="mt-0.5 text-xl font-black text-white">
+          {item.time}
         </Text>
       </View>
 
-      <Text className="mt-1.5 text-lg font-black text-white">
-        {item.time}
-      </Text>
-
       <Pressable
         onPress={() => onSetAlarm(item.time)}
-        className={`mt-2 flex-row items-center justify-center gap-1 rounded-xl py-1.5 active:opacity-85 ${
-          isSet ? 'bg-emerald-500' : 'bg-white/20'
+        className={`flex-row items-center gap-1.5 rounded-xl px-3.5 py-2 active:opacity-85 ${
+          isSet ? 'bg-emerald-500' : 'bg-white/25'
         }`}
       >
-        <AlarmIcon className="text-white" width={10} height={10} />
-        <Text className="text-[8px] font-bold text-white">
+        <AlarmIcon className="text-white" width={11} height={11} />
+        <Text className="text-xs font-bold text-white">
           {isSet ? translate('common.alarm_set') : translate('common.set_alarm')}
         </Text>
       </Pressable>
@@ -85,7 +95,7 @@ function QuickAltCard({ item, activeAlarm, onSetAlarm }: QuickAltCardProps) {
 }
 
 function QuickSleepNow({ activeAlarm, onSetAlarm }: QuickSleepNowProps) {
-  const { ideal, min, max } = React.useMemo(() => {
+  const options = React.useMemo(() => {
     const now = new Date()
     const baseHour = now.getHours()
     const baseMinute = now.getMinutes()
@@ -103,16 +113,16 @@ function QuickSleepNow({ activeAlarm, onSetAlarm }: QuickSleepNowProps) {
       }
     }
 
-    return {
-      ideal: calculate(5, translate('common.ideal')),
-      min: calculate(4, translate('common.minimum')),
-      max: calculate(6, translate('common.maximum')),
-    }
+    return [
+      calculate(5, translate('common.ideal')),
+      calculate(6, translate('common.maximum')),
+      calculate(4, translate('common.minimum')),
+    ]
   }, [])
 
   return (
     <View className="w-full overflow-hidden rounded-3xl border border-[#D21F17]/10 bg-[#D21F17] p-4 shadow-sm dark:border-red-900/30 dark:bg-[#7C120E]">
-      <View className="flex-row items-center justify-between gap-2">
+      <View className="mb-3 flex-row items-center justify-between gap-2">
         <View className="flex-1 shrink flex-row items-center gap-1.5">
           <MoonIcon className="shrink-0 text-[#F5F2EB] dark:text-[#EBE7DD]" width={15} height={15} />
           <Text className="flex-1 shrink text-xs font-bold text-[#F5F2EB]/90 dark:text-[#EBE7DD]/80" numberOfLines={1}>
@@ -124,47 +134,10 @@ function QuickSleepNow({ activeAlarm, onSetAlarm }: QuickSleepNowProps) {
         </Text>
       </View>
 
-      <View className="mt-3.5 rounded-2xl bg-white/20 p-3.5 dark:bg-black/30">
-        <View className="flex-row items-center justify-between gap-2">
-          <View className="flex-1 shrink flex-row items-center gap-1.5">
-            <View className="shrink-0 rounded-full bg-emerald-500 px-2 py-0.5">
-              <Text className="text-[8px] font-bold text-white uppercase">{translate('home.ideal_tag')}</Text>
-            </View>
-            <Text className="flex-1 shrink text-[10px] font-bold text-[#F3C5C3] dark:text-[#BA8C8A]" numberOfLines={1}>
-              {translate('home.ideal_desc')}
-            </Text>
-          </View>
-          <MoonIcon className="shrink-0 text-amber-300" width={14} height={14} />
-        </View>
-
-        <View className="mt-2 flex-row items-end justify-between gap-2">
-          <View className="flex-1 shrink">
-            <Text className="text-xs font-semibold text-[#F3C5C3] dark:text-[#BA8C8A]">
-              {translate('home.wake_up_at')}
-            </Text>
-            <Text className="text-2xl font-black tracking-tight text-white">
-              {ideal.time}
-            </Text>
-          </View>
-
-          <Pressable
-            onPress={() => onSetAlarm(ideal.time)}
-            className={`shrink-0 flex-row items-center gap-1.5 rounded-xl px-3.5 py-2 active:opacity-85 ${
-              activeAlarm === ideal.time ? 'bg-emerald-500' : 'bg-white/25'
-            }`}
-          >
-            <AlarmIcon className="text-white" width={12} height={12} />
-            <Text className="text-xs font-bold text-white">
-              {activeAlarm === ideal.time ? translate('common.alarm_set') : translate('common.set_alarm')}
-            </Text>
-          </Pressable>
-        </View>
-      </View>
-
-      <View className="mt-2 flex-row gap-2">
-        {[min, max].map((item) => (
-          <QuickAltCard
-            key={`quick-alt-${item.cycles}`}
+      <View className="flex-col gap-2">
+        {options.map((item) => (
+          <QuickSleepNowRow
+            key={`quick-row-${item.cycles}`}
             item={item}
             activeAlarm={activeAlarm}
             onSetAlarm={onSetAlarm}
@@ -274,38 +247,106 @@ function BentoCalculateCard({ onPress }: BentoCalculateCardProps) {
   )
 }
 
+function BentoQuickNapCard({ onPress }: { onPress: () => void }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      className="h-[110px] w-full justify-between rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm active:opacity-90 dark:border-neutral-800/30 dark:bg-neutral-900/50"
+    >
+      <View className="flex-row items-center justify-between">
+        <View className="rounded-2xl bg-violet-500/10 p-2 dark:bg-violet-500/20">
+          <PixelZapIcon size={18} color="#8B5CF6" />
+        </View>
+        <Text className="text-[8px] font-black tracking-widest text-violet-600 uppercase dark:text-violet-400">
+          [ NAPS ]
+        </Text>
+      </View>
+      <View className="mt-2">
+        <Text className="text-sm font-black text-neutral-900 dark:text-neutral-50">
+          {translate('calculator.tab_nap')}
+        </Text>
+        <Text className="mt-0.5 text-[9px] font-bold text-violet-600 dark:text-violet-400">
+          20m · 26m · 90m
+        </Text>
+      </View>
+    </Pressable>
+  )
+}
+
 function BentoStreakCard() {
   const token = useAuth.use.token()
   const user = token?.user
   const streak = user?.sleepStreak ?? 0
 
   return (
-    <View className="h-[110px] w-full justify-between rounded-3xl border border-neutral-200/40 bg-white p-4 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
+    <View className="h-[75px] w-full flex-col justify-between rounded-3xl border border-neutral-200/40 bg-white p-3.5 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
       <View className="flex-row items-center justify-between">
-        <View className="rounded-2xl bg-amber-500/10 p-2 dark:bg-amber-500/20">
-          <PixelFlameIcon size={18} color="#F59E0B" />
+        <View className="rounded-xl bg-amber-500/10 p-1.5 dark:bg-amber-500/20">
+          <PixelFlameIcon size={14} color="#F59E0B" />
         </View>
-        <Text className="text-[8px] font-black tracking-widest text-amber-600 uppercase dark:text-amber-400">
-          [ STREAK ]
+        <Text className="text-[7px] font-black tracking-widest text-amber-600 uppercase dark:text-amber-400">
+          STREAK
         </Text>
       </View>
-      <View className="mt-2">
-        <Text className="text-sm font-black text-neutral-900 dark:text-neutral-50">
-          {streak} {streak === 1 ? translate('common.day') || 'Día' : translate('common.days') || 'Días'}
-        </Text>
-        <Text className="mt-0.5 text-[9px] font-bold text-amber-600 dark:text-amber-400">
-          {streak === 0 ? 'Racha en 0 días' : translate('home.btn_streak_sub')}
+      <View className="items-end">
+        <Text className="text-xl font-black text-neutral-900 dark:text-neutral-50">
+          {streak}d
         </Text>
       </View>
     </View>
   )
 }
 
-export function HomeScreen() {
+function HomeHeader({ formattedDate }: { formattedDate: string }) {
   const router = useRouter()
   const token = useAuth.use.token()
   const isGuest = token?.access === 'guest-access'
   const signOut = useAuth.use.signOut()
+
+  return (
+    <View className="my-4 flex-row items-center justify-between">
+      <View className="flex-col">
+        <Text className="text-xs font-semibold text-neutral-400 capitalize dark:text-neutral-500">
+          {formattedDate}
+        </Text>
+        <Text className="mt-1 text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
+          Cyclock
+        </Text>
+      </View>
+
+      <Pressable
+        onPress={() => {
+          if (isGuest) {
+            signOut()
+            router.replace('/login')
+          } else {
+            router.push('/profile')
+          }
+        }}
+        className="relative size-10 overflow-hidden rounded-full border-2 border-neutral-200/80 bg-white shadow-xs active:opacity-80 dark:border-neutral-800 dark:bg-neutral-900"
+      >
+        {token?.user?.photo ? (
+          <Image
+            source={{ uri: token.user.photo }}
+            style={{ width: '100%', height: '100%' }}
+            contentFit="cover"
+          />
+        ) : (
+          <View className="size-full items-center justify-center">
+            <UserIcon
+              className="text-neutral-700 dark:text-neutral-300"
+              width={18}
+              height={18}
+            />
+          </View>
+        )}
+      </Pressable>
+    </View>
+  )
+}
+
+export function HomeScreen() {
+  const router = useRouter()
   const { language } = useSelectedLanguage()
 
   const [showSleepNow, setShowSleepNow] = React.useState(false)
@@ -341,44 +382,7 @@ export function HomeScreen() {
         contentContainerClassName="pb-16"
         showsVerticalScrollIndicator={false}
       >
-        <View className="my-4 flex-row items-center justify-between">
-          <View className="flex-col">
-            <Text className="text-xs font-semibold text-neutral-400 capitalize dark:text-neutral-500">
-              {formattedDate}
-            </Text>
-            <Text className="mt-1 text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
-              Cyclock
-            </Text>
-          </View>
-
-          <Pressable
-            onPress={() => {
-              if (isGuest) {
-                signOut()
-                router.replace('/login')
-              } else {
-                router.push('/profile')
-              }
-            }}
-            className="relative size-10 overflow-hidden rounded-full border-2 border-neutral-200/80 bg-white shadow-xs active:opacity-80 dark:border-neutral-800 dark:bg-neutral-900"
-          >
-            {token?.user?.photo ? (
-              <Image
-                source={{ uri: token.user.photo }}
-                style={{ width: '100%', height: '100%' }}
-                contentFit="cover"
-              />
-            ) : (
-              <View className="size-full items-center justify-center">
-                <UserIcon
-                  className="text-neutral-700 dark:text-neutral-300"
-                  width={18}
-                  height={18}
-                />
-              </View>
-            )}
-          </Pressable>
-        </View>
+        <HomeHeader formattedDate={formattedDate} />
 
         <SleepClock />
 
@@ -397,7 +401,9 @@ export function HomeScreen() {
               <BentoCalculateCard
                 onPress={() => router.push('/calculator')}
               />
-              <BentoStreakCard />
+              <BentoQuickNapCard
+                onPress={() => router.push({ pathname: '/calculator', params: { tab: 'nap' } })}
+              />
             </View>
           </View>
 
@@ -405,7 +411,14 @@ export function HomeScreen() {
             <QuickSleepNow activeAlarm={activeAlarm} onSetAlarm={handleSetAlarm} />
           )}
 
-          <WearableCard />
+          <View className="flex-row items-center gap-2">
+            <View className="flex-1 shrink">
+              <WearableCard />
+            </View>
+            <View className="w-24 shrink-0">
+              <BentoStreakCard />
+            </View>
+          </View>
         </View>
       </ScrollView>
     </View>
