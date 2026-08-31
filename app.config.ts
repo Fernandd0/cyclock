@@ -122,6 +122,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
     'expo-localization',
     'expo-router',
+    'expo-web-browser',
     ['react-native-edge-to-edge'],
     '@react-native-google-signin/google-signin',
   ],

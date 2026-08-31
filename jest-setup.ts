@@ -100,7 +100,18 @@ jest.mock('@react-native-google-signin/google-signin', () => ({
   GoogleSignin: {
     configure: jest.fn(),
     hasPlayServices: jest.fn(() => Promise.resolve(true)),
-    signIn: jest.fn(() => Promise.resolve({ data: { idToken: 'mock-token' } })),
+    signIn: jest.fn(() =>
+      Promise.resolve({
+        data: {
+          idToken: 'mock-id-token',
+          user: {
+            name: 'Google User',
+            email: 'user@google.com',
+            photo: 'https://example.com/photo.jpg',
+          },
+        },
+      })
+    ),
     signOut: jest.fn(() => Promise.resolve()),
     isSignedIn: jest.fn(() => Promise.resolve(false)),
   },
