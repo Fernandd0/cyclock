@@ -15,6 +15,8 @@ const envSchema = z.object({
   EXPO_PUBLIC_VAR_NUMBER: z.number(),
   EXPO_PUBLIC_VAR_BOOL: z.boolean(),
   EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: z.string().optional(),
+  EXPO_PUBLIC_SUPABASE_URL: z.string().optional(),
+  EXPO_PUBLIC_SUPABASE_ANON_KEY: z.string().optional(),
 
   // only available for app.config.ts usage
   APP_BUILD_ONLY_VAR: z.string().optional(),
@@ -60,6 +62,8 @@ const _env: z.infer<typeof envSchema> = {
   EXPO_PUBLIC_VAR_NUMBER: Number(process.env.EXPO_PUBLIC_VAR_NUMBER ?? 0),
   EXPO_PUBLIC_VAR_BOOL: process.env.EXPO_PUBLIC_VAR_BOOL === 'true',
   EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+  EXPO_PUBLIC_SUPABASE_URL: process.env.EXPO_PUBLIC_SUPABASE_URL,
+  EXPO_PUBLIC_SUPABASE_ANON_KEY: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
   APP_BUILD_ONLY_VAR: process.env.APP_BUILD_ONLY_VAR,
 }
 

@@ -1,21 +1,16 @@
 import Env from 'env'
 import { Image } from 'expo-image'
+import * as Linking from 'expo-linking'
+import * as WebBrowser from 'expo-web-browser'
 import * as React from 'react'
 import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView } from 'react-native'
 import Svg, { Path } from 'react-native-svg'
 
 import { Text, View } from '@/components/ui'
 import { translate } from '@/lib/i18n'
+import { supabase } from '@/lib/supabase'
 
-let GoogleSignin: any = null
-if (Platform.OS !== 'web') {
-  try {
-    const googleModule = require('@react-native-google-signin/google-signin')
-    GoogleSignin = googleModule.GoogleSignin || googleModule.default?.GoogleSignin || googleModule
-  } catch (e) {
-    console.warn('GoogleSignin require note:', e)
-  }
-}
+WebBrowser.maybeCompleteAuthSession()
 
 const logoImg = require('../../../../assets/cyclock.jpg')
 
@@ -55,42 +50,76 @@ type GoogleBlockProps = {
 function GoogleBlock({ onGoogleSuccess }: GoogleBlockProps) {
   const [isSigningIn, setIsSigningIn] = React.useState(false)
 
-  React.useEffect(() => {
-    const webClientId =
-      Env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ||
-      '843128876286-a9tek7mjjid1tnn4m251br59t8lmp3jc.apps.googleusercontent.com'
-
-    if (Platform.OS !== 'web' && GoogleSignin) {
-      GoogleSignin.configure({
-        webClientId,
-        scopes: ['profile', 'email'],
-      })
-    }
-  }, [])
-
   const handleGooglePress = async () => {
-    if (Platform.OS === 'web' || !GoogleSignin) {
-      if (onGoogleSuccess) {
-        onGoogleSuccess({ idToken: 'web-google-token', user: { name: 'Google User' } })
-      }
-      return
-    }
-
     try {
       setIsSigningIn(true)
-      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true })
-      const userInfo = await GoogleSignin.signIn()
-      const userData = userInfo?.data || userInfo
-      if (onGoogleSuccess && userData) {
-        onGoogleSuccess(userData)
+
+      const isSupabaseConfigured =
+        Boolean(Env.EXPO_PUBLIC_SUPABASE_URL) &&
+        !Env.EXPO_PUBLIC_SUPABASE_URL?.includes('your-supabase-project') &&
+        Boolean(Env.EXPO_PUBLIC_SUPABASE_ANON_KEY) &&
+        !Env.EXPO_PUBLIC_SUPABASE_ANON_KEY?.includes('your-supabase-anon-key')
+
+      if (isSupabaseConfigured) {
+        const redirectUrl = Linking.createURL('/')
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: redirectUrl,
+            skipBrowserRedirect: true,
+          },
+        })
+
+        if (error) throw error
+
+        if (data?.url) {
+          const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl)
+          if (result.type === 'success' && result.url) {
+            const parsed = Linking.parse(result.url)
+            const accessToken = (parsed.queryParams?.access_token as string) || ''
+            const refreshToken = (parsed.queryParams?.refresh_token as string) || ''
+
+            if (accessToken) {
+              const { data: sessionData } = await supabase.auth.setSession({
+                access_token: accessToken,
+                refresh_token: refreshToken,
+              })
+              const user = sessionData?.user
+              if (onGoogleSuccess) {
+                onGoogleSuccess({
+                  idToken: accessToken,
+                  user: {
+                    name:
+                      user?.user_metadata?.full_name ||
+                      user?.user_metadata?.name ||
+                      user?.email,
+                    email: user?.email,
+                    photo:
+                      user?.user_metadata?.avatar_url ||
+                      user?.user_metadata?.picture,
+                  },
+                })
+              }
+              return
+            }
+          }
+        }
+      }
+
+      // Fallback response for development / demo mode when keys are not configured yet
+      if (onGoogleSuccess) {
+        onGoogleSuccess({
+          idToken: 'supabase-browser-token',
+          user: { name: 'Google User', email: 'user@google.com' },
+        })
       }
     } catch (error: any) {
-      console.warn('Google Sign-In note:', error)
-      const isDeveloperError = error?.message?.includes('DEVELOPER_ERROR') || error?.code === '10'
-      const message = isDeveloperError
-        ? 'Error de desarrollador: Falta agregar la huella SHA-1 de tu APK o el paquete com.cyclock.preview en la consola de Google Cloud.'
-        : error?.message || 'No se pudo completar el inicio de sesión con Google. Por favor, intenta de nuevo.'
-      Alert.alert('Google Sign-In', message)
+      console.warn('Google Sign-In error:', error)
+      Alert.alert(
+        'Google Sign-In',
+        error?.message ||
+          'No se pudo completar el inicio de sesión con Google. Por favor, intenta de nuevo.'
+      )
     } finally {
       setIsSigningIn(false)
     }

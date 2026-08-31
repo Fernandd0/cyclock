@@ -2,6 +2,8 @@ import type { TokenType, UserType } from '@/lib/auth/utils'
 
 import { create } from 'zustand'
 import { getToken, removeToken, setToken } from '@/lib/auth/utils'
+import { supabase } from '@/lib/supabase'
+
 import { createSelectors } from '@/lib/utils'
 
 type AuthState = {
@@ -21,6 +23,7 @@ const _useAuthStore = create<AuthState>((set, get) => ({
     set({ status: 'signIn', token })
   },
   signOut: () => {
+    supabase.auth.signOut().catch(() => {})
     removeToken()
     set({ status: 'signOut', token: null })
   },
