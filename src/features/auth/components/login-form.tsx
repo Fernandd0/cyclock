@@ -33,6 +33,7 @@ const logoImg = require('../../../../assets/cyclock.jpg')
 
 export type LoginFormProps = {
   onGoogleSuccess?: (googleUser?: any) => void
+  onSkip?: () => void
 }
 
 function parseOAuthUrl(url: string) {
@@ -324,9 +325,10 @@ function GoogleBlock({ onGoogleSuccess }: GoogleBlockProps) {
 
 type LoginFormCardProps = {
   onGoogleSuccess?: (googleUser?: any) => void
+  onSkip?: () => void
 }
 
-function LoginFormCard({ onGoogleSuccess }: LoginFormCardProps) {
+function LoginFormCard({ onGoogleSuccess, onSkip = () => {} }: LoginFormCardProps) {
   return (
     <View className="rounded-3xl border border-neutral-200/40 bg-white p-6 shadow-sm dark:border-neutral-800/30 dark:bg-neutral-900/50">
       <Text testID="form-title" className="mb-2 text-center text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">
@@ -339,12 +341,22 @@ function LoginFormCard({ onGoogleSuccess }: LoginFormCardProps) {
 
       <View className="gap-3">
         <GoogleBlock onGoogleSuccess={onGoogleSuccess} />
+
+        <Pressable
+          testID="skip-login-button"
+          onPress={onSkip}
+          className="items-center justify-center rounded-2xl border border-neutral-200/50 bg-neutral-50 py-3.5 active:bg-neutral-100 dark:border-neutral-800/40 dark:bg-neutral-800/40"
+        >
+          <Text className="text-xs font-black text-neutral-600 dark:text-neutral-300">
+            {translate('auth.guest_btn')}
+          </Text>
+        </Pressable>
       </View>
     </View>
   )
 }
 
-export function LoginForm({ onGoogleSuccess }: LoginFormProps) {
+export function LoginForm({ onGoogleSuccess, onSkip = () => {} }: LoginFormProps) {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -359,7 +371,7 @@ export function LoginForm({ onGoogleSuccess }: LoginFormProps) {
         <View className="flex-col gap-4">
           <LoginHeader />
 
-          <LoginFormCard onGoogleSuccess={onGoogleSuccess} />
+          <LoginFormCard onGoogleSuccess={onGoogleSuccess} onSkip={onSkip} />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

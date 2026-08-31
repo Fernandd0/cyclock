@@ -77,10 +77,22 @@ export function LoginScreen() {
     })
   }
 
+  const onSkip = () => {
+    handleSignInWithUser({
+      access: 'guest-access',
+      refresh: 'guest-refresh',
+      user: {
+        name: 'Invitado',
+        email: 'invitado@cyclock.app',
+        photo: '',
+      },
+    })
+  }
+
   return (
     <>
       <FocusAwareStatusBar />
-      <LoginForm onGoogleSuccess={onGoogleSuccess} />
+      <LoginForm onGoogleSuccess={onGoogleSuccess} onSkip={onSkip} />
     </>
   )
 }

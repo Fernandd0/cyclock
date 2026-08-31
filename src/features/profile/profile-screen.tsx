@@ -154,6 +154,35 @@ function ProfileFooterActions() {
   )
 }
 
+function GuestBannerCard() {
+  const router = useRouter()
+  const signOut = useAuthStore.use.signOut()
+
+  return (
+    <View className="mb-4 rounded-3xl border border-amber-300/50 bg-amber-50/80 p-5 shadow-sm dark:border-amber-900/30 dark:bg-amber-950/20">
+      <View className="flex-row items-center gap-2">
+        <Text className="text-sm font-black text-amber-800 dark:text-amber-300">
+          ⚠️ Modo Invitado Activo
+        </Text>
+      </View>
+      <Text className="mt-1.5 text-xs/relaxed font-medium text-amber-900/80 dark:text-amber-200/80">
+        Estás navegando sin una cuenta vinculada. Inicia sesión con tu cuenta de Google para respaldar y sincronizar tus metas e historial de sueño en Supabase.
+      </Text>
+      <Pressable
+        onPress={() => {
+          signOut()
+          router.replace('/login')
+        }}
+        className="mt-3.5 items-center justify-center rounded-2xl bg-[#D21F17] py-3 active:opacity-85 dark:bg-red-600"
+      >
+        <Text className="text-xs font-black text-white">
+          Registrarse / Iniciar Sesión con Google
+        </Text>
+      </Pressable>
+    </View>
+  )
+}
+
 export function ProfileScreen() {
   const router = useRouter()
   const token = useAuthStore.use.token()
@@ -204,6 +233,8 @@ export function ProfileScreen() {
 
           <View className="w-10" />
         </View>
+
+        {isGuest && <GuestBannerCard />}
 
         <UserHeaderCard name={name} email={email} photo={user?.photo} isGuest={isGuest} />
 
