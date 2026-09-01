@@ -7,12 +7,46 @@ import { supabase } from '@/lib/supabase'
 import { LoginForm } from './components/login-form'
 import { useAuthStore } from './use-auth-store'
 
+let WebBrowserModule: any = null
+try {
+  WebBrowserModule = require('expo-web-browser')
+} catch {}
+
+function extractSessionUserData(session: any) {
+  const user = session?.user || {}
+  const meta = user.user_metadata || {}
+  const identityMeta = user.identities?.[0]?.identity_data || {}
+
+  const userEmail = user.email || identityMeta.email || ''
+  const userName =
+    meta.full_name ||
+    meta.name ||
+    meta.given_name ||
+    identityMeta.full_name ||
+    identityMeta.name ||
+    (userEmail ? userEmail.split('@')[0] : '')
+  const userPhoto =
+    meta.avatar_url ||
+    meta.picture ||
+    identityMeta.avatar_url ||
+    identityMeta.picture ||
+    ''
+
+  return { name: userName, email: userEmail, photo: userPhoto }
+}
+
 export function LoginScreen() {
   const router = useRouter()
   const signIn = useAuthStore.use.signIn()
 
   const handleSignInWithUser = React.useCallback(
     (userData: { access?: string; refresh?: string; user?: any }) => {
+      try {
+        if (WebBrowserModule?.dismissBrowser) {
+          WebBrowserModule.dismissBrowser()
+        }
+      } catch {}
+
       const userObj = userData.user || {}
       const userEmail = userObj?.email || ''
       const userName =
@@ -40,23 +74,17 @@ export function LoginScreen() {
   React.useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session?.user) {
-        const user = session.user
-        const meta = user.user_metadata || {}
-        const userEmail = user.email || ''
-        const userName =
-          meta.full_name ||
-          meta.name ||
-          meta.given_name ||
-          (userEmail ? userEmail.split('@')[0] : '')
+        try {
+          if (WebBrowserModule?.dismissBrowser) {
+            WebBrowserModule.dismissBrowser()
+          }
+        } catch {}
 
+        const userProfile = extractSessionUserData(session)
         handleSignInWithUser({
           access: session.access_token,
           refresh: session.refresh_token,
-          user: {
-            name: userName,
-            email: userEmail,
-            photo: meta.avatar_url || meta.picture || '',
-          },
+          user: userProfile,
         })
       }
     })

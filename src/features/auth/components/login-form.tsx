@@ -160,6 +160,27 @@ async function performNativeGoogleAuth(
   }
 }
 
+function extractUserData(sessionUser: any) {
+  const meta = sessionUser?.user_metadata || {}
+  const identityMeta = sessionUser?.identities?.[0]?.identity_data || {}
+  const email = sessionUser?.email || identityMeta.email || ''
+  const name =
+    meta.full_name ||
+    meta.name ||
+    meta.given_name ||
+    identityMeta.full_name ||
+    identityMeta.name ||
+    (email ? email.split('@')[0] : '')
+  const photo =
+    meta.avatar_url ||
+    meta.picture ||
+    identityMeta.avatar_url ||
+    identityMeta.picture ||
+    ''
+
+  return { name, email, photo }
+}
+
 async function performWebGoogleAuth(
   isSupabaseConfigured: boolean,
   onGoogleSuccess?: (googleUser?: any) => void
@@ -167,7 +188,7 @@ async function performWebGoogleAuth(
   if (!isSupabaseConfigured) return false
 
   try {
-    const redirectUrl = Linking.createURL('/')
+    const redirectUrl = Linking.createURL('/', { scheme: 'cyclock' })
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -185,12 +206,26 @@ async function performWebGoogleAuth(
         const res = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl)
         if (res.type === 'success' && res.url) {
           resultUrl = res.url
-        } else if (res.type === 'cancel' || res.type === 'dismiss') {
-          return true
         }
       } catch (wbErr) {
         console.warn('WebBrowser error:', wbErr)
       }
+    }
+
+    // Check if session was created in Supabase
+    const { data: currentSession } = await supabase.auth.getSession()
+    if (currentSession?.session?.user) {
+      try {
+        if (WebBrowser?.dismissBrowser) {
+          WebBrowser.dismissBrowser()
+        }
+      } catch {}
+      const user = extractUserData(currentSession.session.user)
+      onGoogleSuccess?.({
+        idToken: currentSession.session.access_token,
+        user,
+      })
+      return true
     }
 
     if (!resultUrl) return false
@@ -217,18 +252,16 @@ async function performWebGoogleAuth(
     }
 
     if (sessionUser) {
-      const meta = sessionUser.user_metadata || {}
-      const email = sessionUser.email || ''
-      const name =
-        meta.full_name ||
-        meta.name ||
-        meta.given_name ||
-        (email ? email.split('@')[0] : '')
-      const photo = meta.avatar_url || meta.picture || ''
+      try {
+        if (WebBrowser?.dismissBrowser) {
+          WebBrowser.dismissBrowser()
+        }
+      } catch {}
 
+      const user = extractUserData(sessionUser)
       onGoogleSuccess?.({
         idToken: sessionToken || 'supabase-google-token',
-        user: { name, email, photo },
+        user,
       })
       return true
     }
